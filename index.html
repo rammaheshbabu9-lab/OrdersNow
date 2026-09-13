@@ -3,402 +3,406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LOOPIN — One Workspace</title>
+<meta name="theme-color" content="#ffffff">
+<title>LOOPIN</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-
-:root{
-  --bg:#fff;
-  --text:#17171b;
-  --muted:#8b8b95;
-  --line:#eeeeF2;
-  --hover:#f5f5f8;
-  --active:#f0edff;
-  --accent:#6c5ce7;
-  --danger:#e5484d;
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
 html,body{
   width:100%;
   height:100%;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:#fff;
+  color:#111;
   overflow:hidden;
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
 }
 
-button,input,textarea{
-  font:inherit;
-}
+/* =========================
+   APP SHELL
+========================= */
 
-button{
-  border:0;
-  background:none;
-  cursor:pointer;
-}
-
-.app{
-  display:flex;
+.app-shell{
   width:100%;
   height:100vh;
+  display:flex;
+  background:#fff;
 }
 
-/* ================= SIDEBAR ================= */
+/* =========================
+   SIDEBAR
+========================= */
 
 .sidebar{
   width:76px;
   min-width:76px;
   height:100vh;
-  border-right:1px solid var(--line);
+  border-right:1px solid #e9e9ed;
   background:#fff;
   display:flex;
   flex-direction:column;
   align-items:center;
-  padding:13px 8px;
-  z-index:20;
+  padding:14px 10px;
+  z-index:50;
 }
 
-.logo-btn{
-  width:48px;
-  height:48px;
+.logo{
+  width:42px;
+  height:42px;
+  border-radius:13px;
   display:flex;
   align-items:center;
   justify-content:center;
   margin-bottom:14px;
-  border-radius:15px;
+  cursor:pointer;
 }
 
-.logo-btn:hover{
-  background:var(--hover);
+.logo svg{
+  width:42px;
+  height:42px;
 }
 
-.logo-svg{
-  width:40px;
-  height:40px;
-}
+/* top tools */
 
-.apps{
+.top-tools{
   width:100%;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:6px;
+  gap:7px;
+}
+
+.tool-btn{
+  width:48px;
+  height:44px;
+  border:0;
+  background:transparent;
+  border-radius:13px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  color:#777;
+  transition:.16s ease;
+}
+
+.tool-btn:hover{
+  background:#f5f5f7;
+  color:#111;
+}
+
+.tool-btn.active{
+  background:#f1f1f4;
+  color:#111;
+}
+
+.tool-icon{
+  width:19px;
+  height:19px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.tool-label{
+  font-size:8px;
+  margin-top:2px;
+  font-weight:600;
+}
+
+/* divider */
+
+.divider{
+  width:34px;
+  height:1px;
+  background:#ededf0;
+  margin:9px 0;
+}
+
+/* apps */
+
+.apps-list{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:7px;
   overflow-y:auto;
-  overflow-x:hidden;
+  overflow-x:visible;
+  padding:2px 0 5px;
   scrollbar-width:none;
 }
 
-.apps::-webkit-scrollbar{
+.apps-list::-webkit-scrollbar{
   display:none;
 }
 
 .app-item{
-  width:54px;
-  height:54px;
-  border-radius:15px;
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
-  position:relative;
-  transition:.16s ease;
   cursor:pointer;
   user-select:none;
+  transition:.16s ease;
 }
 
 .app-item:hover{
-  background:var(--hover);
+  background:#f5f5f7;
+  transform:translateY(-1px);
 }
 
-.app-item.active{
-  background:var(--active);
+.app-item.dragging{
+  opacity:.4;
+  transform:scale(.94);
 }
 
-.app-item.active::before{
-  content:"";
-  position:absolute;
-  left:-8px;
-  width:3px;
-  height:22px;
-  border-radius:0 5px 5px 0;
-  background:var(--accent);
+.app-item.drag-over{
+  background:#eeeef2;
+  outline:2px dashed #c8c8cf;
 }
 
 .app-icon{
-  width:29px;
-  height:29px;
+  width:30px;
+  height:30px;
+  border-radius:9px;
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:9px;
+  font-size:13px;
+  font-weight:800;
   overflow:hidden;
 }
 
 .app-icon svg{
-  width:100%;
-  height:100%;
+  width:30px;
+  height:30px;
 }
 
 .app-letter{
-  width:29px;
-  height:29px;
+  color:#fff;
+  width:30px;
+  height:30px;
   border-radius:9px;
   display:flex;
   align-items:center;
   justify-content:center;
-  color:#fff;
-  font-size:13px;
-  font-weight:700;
+  font-weight:800;
+  font-size:12px;
 }
 
-.tooltip{
+/* tooltip */
+
+.app-item::after{
+  content:attr(data-name);
   position:absolute;
-  left:65px;
+  left:58px;
   top:50%;
   transform:translateY(-50%);
-  background:#17171b;
+  background:#151515;
   color:#fff;
-  padding:7px 10px;
+  font-size:11px;
+  padding:7px 9px;
   border-radius:8px;
-  font-size:12px;
   white-space:nowrap;
   opacity:0;
   pointer-events:none;
-  transition:.12s;
+  transition:.12s ease;
   z-index:100;
 }
 
-.app-item:hover .tooltip{
+.app-item:hover::after{
   opacity:1;
 }
 
-.add-app{
-  width:48px;
-  height:48px;
-  margin-top:10px;
-  border:1px dashed #d5d5dc;
-  border-radius:14px;
-  color:#686872;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  transition:.15s;
-}
-
-.add-app:hover{
-  background:var(--hover);
-  color:var(--accent);
-  border-color:var(--accent);
-}
-
-.sidebar-spacer{
-  flex:1;
-}
+/* bottom */
 
 .bottom-tools{
+  margin-top:auto;
+  width:100%;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:6px;
-  padding-top:12px;
-  border-top:1px solid var(--line);
+  gap:7px;
 }
 
-.tool{
-  width:54px;
-  height:50px;
-  border-radius:14px;
-  color:#777781;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-
-.tool:hover{
-  background:var(--hover);
-  color:#222;
-}
-
-.tool.active{
-  background:var(--active);
-  color:var(--accent);
-}
-
-.tool svg{
-  width:21px;
-  height:21px;
-}
-
-/* ================= MAIN ================= */
+/* =========================
+   MAIN
+========================= */
 
 .main{
   flex:1;
   min-width:0;
   height:100vh;
-  display:flex;
-  flex-direction:column;
+  position:relative;
   background:#fff;
 }
 
 .topbar{
-  height:64px;
-  min-height:64px;
-  border-bottom:1px solid var(--line);
+  height:62px;
+  width:100%;
+  border-bottom:1px solid #f0f0f2;
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  padding:0 24px;
-}
-
-.page-title{
-  font-size:15px;
-  font-weight:650;
-}
-
-.top-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
+  justify-content:flex-end;
+  padding:0 20px;
 }
 
 .search-btn{
-  width:38px;
-  height:38px;
-  border:1px solid var(--line);
-  border-radius:11px;
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  color:#666;
   display:flex;
   align-items:center;
   justify-content:center;
-  color:#5e5e68;
+  cursor:pointer;
 }
 
 .search-btn:hover{
-  background:var(--hover);
-  color:#222;
+  background:#f5f5f7;
+  color:#111;
 }
 
-.search-btn svg{
-  width:19px;
-  height:19px;
-}
-
-.content{
-  flex:1;
+.workspace{
+  height:calc(100vh - 62px);
   overflow:auto;
   position:relative;
 }
 
-/* ================= HOME ================= */
+/* home */
 
 .home{
-  width:100%;
-  height:100%;
+  min-height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
-  text-align:center;
+  padding:30px;
 }
 
 .home-message{
-  color:#777781;
+  color:#a0a0a7;
   font-size:15px;
-  letter-spacing:-.1px;
-}
-
-.home-message .home-mark{
-  width:42px;
-  height:42px;
-  margin:0 auto 16px;
-  opacity:.55;
-}
-
-.home-message p{
   font-weight:500;
+  text-align:center;
 }
 
-/* ================= NOTES ================= */
+/* =========================
+   PAGE
+========================= */
 
-.panel{
-  width:100%;
-  height:100%;
-  padding:30px;
-  overflow:auto;
-}
-
-.panel-head{
-  max-width:900px;
-  margin:0 auto 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.panel-title{
-  font-size:22px;
-  font-weight:700;
-}
-
-.panel-subtitle{
-  color:#888891;
-  font-size:13px;
-  margin-top:5px;
-}
-
-.note-wrap{
-  max-width:900px;
+.page{
+  min-height:100%;
+  padding:42px 5vw;
+  max-width:1100px;
   margin:auto;
 }
 
-.notes{
+.page-header{
+  margin-bottom:28px;
+}
+
+.page-title{
+  font-size:30px;
+  letter-spacing:-.8px;
+  font-weight:700;
+}
+
+.page-subtitle{
+  margin-top:7px;
+  color:#8b8b92;
+  font-size:14px;
+}
+
+/* =========================
+   NOTES
+========================= */
+
+.notes-box{
   width:100%;
-  min-height:420px;
+  min-height:520px;
+  border:1px solid #e7e7eb;
+  border-radius:18px;
+  padding:22px;
   resize:none;
   outline:none;
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:20px;
+  font-family:inherit;
   font-size:15px;
   line-height:1.7;
   color:#222;
   background:#fff;
-  box-shadow:0 3px 18px rgba(20,20,30,.035);
+  box-shadow:0 8px 30px rgba(0,0,0,.03);
 }
 
-.notes:focus{
-  border-color:#d8d3fa;
+.notes-box:focus{
+  border-color:#cfcfd6;
 }
 
-.save-status{
-  font-size:12px;
-  color:#9999a2;
-  margin-top:9px;
+/* =========================
+   SAVED URLS
+========================= */
+
+.url-add{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
 }
 
-/* ================= SAVED ================= */
+.url-add input{
+  flex:1;
+  height:44px;
+  border:1px solid #e6e6ea;
+  border-radius:11px;
+  padding:0 13px;
+  outline:none;
+  font-size:13px;
+}
+
+.url-add input:focus{
+  border-color:#bdbdc5;
+}
+
+.primary-btn{
+  height:44px;
+  border:0;
+  background:#111;
+  color:#fff;
+  padding:0 18px;
+  border-radius:11px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.primary-btn:hover{
+  opacity:.88;
+}
 
 .saved-list{
-  max-width:900px;
-  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
-.saved-empty{
-  border:1px dashed #dddde4;
-  border-radius:15px;
-  padding:35px;
-  text-align:center;
-  color:#9999a2;
-}
-
-.saved-item{
-  border:1px solid var(--line);
+.saved-card{
+  border:1px solid #e9e9ed;
   border-radius:14px;
   padding:15px;
-  margin-bottom:10px;
   display:flex;
   align-items:center;
-  gap:14px;
+  gap:12px;
 }
 
 .saved-info{
@@ -406,174 +410,145 @@ button{
   min-width:0;
 }
 
-.saved-name{
+.saved-title{
   font-size:14px;
   font-weight:650;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .saved-url{
-  color:#92929b;
-  font-size:12px;
+  color:#999;
+  font-size:11px;
   margin-top:4px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
-.saved-open{
-  padding:8px 12px;
-  border-radius:9px;
-  background:#f3f2ff;
-  color:var(--accent);
-  font-size:12px;
-  font-weight:600;
-}
-
-.delete-btn{
-  width:32px;
-  height:32px;
-  border-radius:9px;
-  color:#aaa;
-}
-
-.delete-btn:hover{
-  background:#fff0f0;
-  color:var(--danger);
-}
-
-/* ================= SETTINGS ================= */
-
-.settings-card{
-  max-width:900px;
-  margin:auto;
-  border:1px solid var(--line);
-  border-radius:17px;
-  overflow:hidden;
-}
-
-.setting-row{
-  min-height:65px;
-  padding:15px 18px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-}
-
-.setting-row:last-child{
-  border-bottom:0;
-}
-
-.setting-name{
-  font-size:14px;
-  font-weight:600;
-}
-
-.setting-desc{
-  color:#92929b;
-  font-size:12px;
-  margin-top:4px;
-}
-
-.setting-button{
-  padding:9px 13px;
-  border:1px solid #e1e1e6;
-  border-radius:9px;
-  font-size:12px;
-  font-weight:600;
-}
-
-.setting-button:hover{
-  background:#f7f7f9;
-}
-
-.setting-button.danger{
-  color:var(--danger);
-}
-
-/* ================= SEARCH ================= */
-
-.search-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(20,20,25,.14);
-  backdrop-filter:blur(3px);
-  display:none;
-  align-items:flex-start;
-  justify-content:center;
-  padding-top:92px;
-  z-index:200;
-}
-
-.search-overlay.show{
-  display:flex;
-}
-
-.search-box{
-  width:min(520px,calc(100% - 30px));
+.small-btn{
+  height:34px;
+  border:1px solid #e5e5e9;
   background:#fff;
-  border:1px solid #e8e8ed;
-  border-radius:17px;
-  box-shadow:0 18px 55px rgba(0,0,0,.13);
-  overflow:hidden;
+  border-radius:9px;
+  padding:0 11px;
+  font-size:11px;
+  cursor:pointer;
 }
 
-.search-input-wrap{
-  height:62px;
+.small-btn:hover{
+  background:#f6f6f8;
+}
+
+.danger{
+  color:#c62828;
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+.settings-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.setting-card{
+  border:1px solid #e8e8ec;
+  border-radius:16px;
+  padding:19px;
+  background:#fff;
+}
+
+.setting-title{
+  font-size:14px;
+  font-weight:700;
+}
+
+.setting-text{
+  color:#999;
+  font-size:12px;
+  line-height:1.5;
+  margin-top:6px;
+}
+
+.setting-action{
+  margin-top:15px;
+  height:36px;
+  border:1px solid #e2e2e6;
+  background:#fff;
+  border-radius:9px;
+  padding:0 12px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:600;
+}
+
+.setting-action:hover{
+  background:#f5f5f7;
+}
+
+.manage-apps{
+  margin-top:25px;
+}
+
+.manage-row{
   display:flex;
   align-items:center;
   gap:12px;
-  padding:0 18px;
+  padding:12px 0;
+  border-bottom:1px solid #f0f0f2;
 }
 
-.search-input-wrap svg{
-  width:20px;
-  color:#777;
+.manage-row:last-child{
+  border-bottom:0;
 }
 
-.search-input{
+.manage-icon{
+  width:34px;
+  height:34px;
+  border-radius:9px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.manage-name{
   flex:1;
-  border:0;
-  outline:0;
-  font-size:15px;
-  color:#222;
+  font-size:13px;
+  font-weight:600;
 }
 
-.search-input::placeholder{
-  color:#aaaab2;
-}
+/* =========================
+   MODALS
+========================= */
 
-.search-hint{
-  border-top:1px solid var(--line);
-  padding:11px 18px;
-  color:#9999a2;
-  font-size:11px;
-}
-
-/* ================= MODAL ================= */
-
-.modal-bg{
+.modal-layer{
   position:fixed;
   inset:0;
-  background:rgba(20,20,25,.25);
-  backdrop-filter:blur(3px);
+  background:rgba(0,0,0,.28);
+  backdrop-filter:blur(7px);
   display:none;
   align-items:center;
   justify-content:center;
-  padding:20px;
-  z-index:300;
+  z-index:200;
+  padding:18px;
 }
 
-.modal-bg.show{
+.modal-layer.show{
   display:flex;
 }
 
 .modal{
-  width:min(440px,100%);
+  width:min(620px,100%);
+  max-height:88vh;
+  overflow:auto;
   background:#fff;
-  border-radius:20px;
-  box-shadow:0 25px 70px rgba(0,0,0,.18);
+  border-radius:22px;
+  box-shadow:0 25px 80px rgba(0,0,0,.18);
   padding:22px;
 }
 
@@ -581,127 +556,296 @@ button{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom:20px;
+  margin-bottom:17px;
 }
 
 .modal-title{
-  font-size:18px;
+  font-size:19px;
+  font-weight:750;
+}
+
+.close-btn{
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:9px;
+  background:#f5f5f7;
+  cursor:pointer;
+  font-size:17px;
+}
+
+.modal-label{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  color:#666;
+  margin:14px 0 7px;
+}
+
+.input{
+  width:100%;
+  height:43px;
+  border:1px solid #e5e5e9;
+  border-radius:10px;
+  padding:0 12px;
+  outline:none;
+  font-size:13px;
+}
+
+.input:focus{
+  border-color:#bdbdc5;
+}
+
+/* app choices */
+
+.app-search{
+  margin-bottom:12px;
+}
+
+.app-choices{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  max-height:310px;
+  overflow:auto;
+}
+
+.app-choice{
+  border:1px solid #e7e7eb;
+  background:#fff;
+  border-radius:13px;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  text-align:left;
+}
+
+.app-choice:hover{
+  background:#f7f7f8;
+  border-color:#d5d5da;
+}
+
+.choice-icon{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  overflow:hidden;
+  flex:none;
+}
+
+.choice-info{
+  min-width:0;
+  flex:1;
+}
+
+.choice-name{
+  font-size:12px;
   font-weight:700;
 }
 
-.close{
-  width:34px;
-  height:34px;
-  border-radius:9px;
-  color:#888;
+.choice-desc{
+  color:#999;
+  font-size:10px;
+  margin-top:2px;
 }
 
-.close:hover{
-  background:#f5f5f7;
-}
-
-.form-group{
-  margin-bottom:14px;
-}
-
-.form-label{
-  display:block;
-  font-size:12px;
-  font-weight:600;
-  color:#55555e;
-  margin-bottom:7px;
-}
-
-.form-input{
+.add-choice{
+  margin-top:12px;
   width:100%;
-  height:44px;
-  border:1px solid #e4e4e9;
-  border-radius:10px;
-  outline:none;
-  padding:0 12px;
-  font-size:13px;
-}
-
-.form-input:focus{
-  border-color:#bdb5fa;
-}
-
-.form-actions{
-  display:flex;
-  gap:9px;
-  margin-top:20px;
-}
-
-.btn{
-  flex:1;
-  height:44px;
-  border-radius:10px;
-  font-size:13px;
+  border:1px dashed #d6d6db;
+  background:#fafafa;
+  border-radius:13px;
+  padding:12px;
+  cursor:pointer;
+  font-size:12px;
   font-weight:650;
 }
 
-.btn-secondary{
-  border:1px solid #e2e2e7;
+.custom-form{
+  display:none;
 }
 
-.btn-primary{
-  background:#17171b;
-  color:#fff;
+.custom-form.show{
+  display:block;
 }
 
-.btn-primary:hover{
-  background:#000;
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  margin-top:18px;
 }
 
-/* ================= MOBILE ================= */
+.secondary-btn{
+  height:40px;
+  border:1px solid #e4e4e8;
+  background:#fff;
+  padding:0 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:12px;
+}
 
-@media(max-width:650px){
+/* context */
+
+.context-menu{
+  position:fixed;
+  z-index:400;
+  display:none;
+  width:160px;
+  background:#fff;
+  border:1px solid #e5e5e8;
+  border-radius:12px;
+  box-shadow:0 15px 40px rgba(0,0,0,.15);
+  padding:5px;
+}
+
+.context-menu.show{
+  display:block;
+}
+
+.context-item{
+  width:100%;
+  height:36px;
+  border:0;
+  background:#fff;
+  border-radius:8px;
+  text-align:left;
+  padding:0 10px;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.context-item:hover{
+  background:#f5f5f7;
+}
+
+.context-item.remove{
+  color:#c62828;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-panel{
+  position:absolute;
+  top:68px;
+  right:20px;
+  width:min(410px,calc(100vw - 110px));
+  background:#fff;
+  border:1px solid #e6e6e9;
+  border-radius:16px;
+  box-shadow:0 18px 55px rgba(0,0,0,.13);
+  padding:12px;
+  display:none;
+  z-index:100;
+}
+
+.search-panel.show{
+  display:block;
+}
+
+.search-input-wrap{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.search-input{
+  flex:1;
+  border:0;
+  outline:none;
+  height:40px;
+  font-size:14px;
+}
+
+.search-hint{
+  font-size:10px;
+  color:#999;
+  padding:6px 3px 1px;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+  padding:45px 20px;
+  text-align:center;
+  color:#aaa;
+  font-size:13px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px){
+
   .sidebar{
     width:64px;
     min-width:64px;
-    padding:10px 5px;
+    padding:10px 7px;
   }
 
-  .logo-btn{
+  .logo,
+  .logo svg{
+    width:38px;
+    height:38px;
+  }
+
+  .tool-btn{
     width:44px;
-    height:44px;
+    height:42px;
   }
 
   .app-item{
-    width:48px;
-    height:48px;
-  }
-
-  .tool{
-    width:48px;
-    height:46px;
-  }
-
-  .add-app{
     width:44px;
     height:44px;
   }
 
-  .topbar{
-    height:58px;
-    min-height:58px;
-    padding:0 15px;
+  .app-icon,
+  .app-icon svg,
+  .app-letter{
+    width:28px;
+    height:28px;
   }
 
-  .panel{
-    padding:20px 14px;
-  }
-
-  .home-message{
-    padding:20px;
-  }
-
-  .notes{
-    min-height:calc(100vh - 150px);
-  }
-
-  .tooltip{
+  .app-item::after{
     display:none;
+  }
+
+  .topbar{
+    height:56px;
+    padding:0 12px;
+  }
+
+  .workspace{
+    height:calc(100vh - 56px);
+  }
+
+  .page{
+    padding:28px 18px;
+  }
+
+  .page-title{
+    font-size:25px;
+  }
+
+  .settings-grid{
+    grid-template-columns:1fr;
+  }
+
+  .app-choices{
+    grid-template-columns:1fr;
+  }
+
+  .url-add{
+    flex-direction:column;
   }
 }
 </style>
@@ -709,635 +853,653 @@ button{
 
 <body>
 
-<div class="app">
+<div class="app-shell">
 
   <!-- SIDEBAR -->
   <aside class="sidebar">
 
     <!-- LOOPIN LOGO -->
-    <button class="logo-btn" onclick="showHome()" title="LOOPIN">
-      <svg class="logo-svg" viewBox="0 0 50 50" fill="none">
-        <rect x="3" y="3" width="44" height="44" rx="14" fill="#17171B"/>
-        <path d="M13 25C13 17.8 18.5 13 25.2 13C31.8 13 37 17.7 37 24.9C37 32 31.8 37 25 37C18.4 37 13 32.1 13 25Z"
-              stroke="white" stroke-width="3.2"/>
-        <path d="M20 25C20 21.9 22.2 20 25.2 20C28.2 20 30 22 30 25C30 28 28.1 30 25 30C22.1 30 20 28 20 25Z"
-              stroke="#8B7CFF" stroke-width="2.6"/>
-        <circle cx="35.5" cy="14.5" r="3" fill="#8B7CFF"/>
+    <div class="logo" onclick="goHome()" title="LOOPIN">
+      <svg viewBox="0 0 42 42" fill="none">
+        <rect width="42" height="42" rx="13" fill="#111"/>
+        <ellipse cx="21" cy="21" rx="13" ry="7.5"
+                 stroke="white" stroke-width="2.2"
+                 transform="rotate(-35 21 21)"/>
+        <circle cx="29.5" cy="14" r="3.2" fill="#9B7CFF"/>
       </svg>
-    </button>
+    </div>
 
-    <div class="apps" id="apps"></div>
+    <!-- TOP TOOLS -->
+    <div class="top-tools">
 
-    <button class="add-app" onclick="openAddApp()" title="Add App">+</button>
-
-    <div class="sidebar-spacer"></div>
-
-    <div class="bottom-tools">
-
-      <button class="tool" id="notesTool" onclick="openNotes()" title="Notes">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M6 3.5h9l3 3V20.5H6A2 2 0 0 1 4 18.5v-13a2 2 0 0 1 2-2Z"
-                stroke="currentColor" stroke-width="1.7"/>
-          <path d="M14 3.5v4h4M8 11h6M8 14.5h6M8 18h4"
-                stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-        </svg>
-        <span class="tooltip">Notes</span>
+      <!-- SETTINGS MOVED TO TOP -->
+      <button class="tool-btn" onclick="openPage('settings')" title="Settings">
+        <span class="tool-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4Z"
+                  stroke="currentColor" stroke-width="1.7"/>
+            <path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.06.06-1.7 1.7-.06-.06a1.8 1.8 0 0 0-1.98-.36 1.8 1.8 0 0 0-1.1 1.65v.09h-2.4v-.09a1.8 1.8 0 0 0-1.1-1.65 1.8 1.8 0 0 0-1.98.36l-.06.06-1.7-1.7.06-.06A1.8 1.8 0 0 0 8.2 15a1.8 1.8 0 0 0-1.65-1.1h-.09v-2.4h.09A1.8 1.8 0 0 0 8.2 10a1.8 1.8 0 0 0-.36-1.98l-.06-.06 1.7-1.7.06.06a1.8 1.8 0 0 0 1.98.36A1.8 1.8 0 0 0 12.62 5v-.09h2.4V5a1.8 1.8 0 0 0 1.1 1.65 1.8 1.8 0 0 0 1.98-.36l.06-.06 1.7 1.7-.06.06A1.8 1.8 0 0 0 19.44 10a1.8 1.8 0 0 0 1.65 1.1h.09v2.4h-.09A1.8 1.8 0 0 0 19.4 15Z"
+                  stroke="currentColor" stroke-width="1.25"/>
+          </svg>
+        </span>
+        <span class="tool-label">Settings</span>
       </button>
 
-      <button class="tool" id="savedTool" onclick="openSaved()" title="Saved URLs">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M7 5.5A2.5 2.5 0 0 1 9.5 3h9A2.5 2.5 0 0 1 21 5.5v9A2.5 2.5 0 0 1 18.5 17h-9A2.5 2.5 0 0 1 7 14.5v-9Z"
-                stroke="currentColor" stroke-width="1.7"/>
-          <path d="M4 8v10.5A2.5 2.5 0 0 0 6.5 21H17M10 8.5h6M10 12h6"
-                stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-        </svg>
-        <span class="tooltip">Saved URLs</span>
-      </button>
-
-      <button class="tool" id="settingsTool" onclick="openSettings()" title="Settings">
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 0 0 12 8.5Z"
-                stroke="currentColor" stroke-width="1.7"/>
-          <path d="M19 13.3a7.3 7.3 0 0 0 0-2.6l2-1.5-2-3.4-2.4 1a8 8 0 0 0-2.2-1.3L14 3h-4l-.4 2.5a8 8 0 0 0-2.2 1.3L5 5.8 3 9.2l2 1.5a7.3 7.3 0 0 0 0 2.6l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 2.2 1.3L10 21h4l.4-2.5a8 8 0 0 0 2.2-1.3l2.4 1 2-3.4-2-1.5Z"
-                stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-        </svg>
-        <span class="tooltip">Settings</span>
+      <!-- ADD APP -->
+      <button class="tool-btn" onclick="openAddApp()" title="Add App">
+        <span class="tool-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 5v14M5 12h14" stroke="currentColor"
+                  stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="tool-label">Add</span>
       </button>
 
     </div>
+
+    <div class="divider"></div>
+
+    <!-- APP LIST -->
+    <div class="apps-list" id="appsList"></div>
+
+    <!-- BOTTOM -->
+    <div class="bottom-tools">
+
+      <div class="divider"></div>
+
+      <button class="tool-btn" onclick="openPage('notes')" title="Notes">
+        <span class="tool-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <path d="M5 4.8A1.8 1.8 0 0 1 6.8 3h10.4A1.8 1.8 0 0 1 19 4.8v14.4a1.8 1.8 0 0 1-1.8 1.8H6.8A1.8 1.8 0 0 1 5 19.2V4.8Z"
+                  stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8.5 8h7M8.5 12h7M8.5 16h4.5"
+                  stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="tool-label">Notes</span>
+      </button>
+
+      <button class="tool-btn" onclick="openPage('saved')" title="Saved URLs">
+        <span class="tool-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+            <path d="M6 5.5A2.5 2.5 0 0 1 8.5 3h7A2.5 2.5 0 0 1 18 5.5v15l-6-3.4-6 3.4v-15Z"
+                  stroke="currentColor" stroke-width="1.6"
+                  stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="tool-label">Saved</span>
+      </button>
+
+    </div>
+
   </aside>
 
   <!-- MAIN -->
   <main class="main">
 
     <header class="topbar">
-      <div class="page-title" id="pageTitle">LOOPIN</div>
-
-      <div class="top-actions">
-        <button class="search-btn" onclick="openSearch()" title="Search Google">
-          <svg viewBox="0 0 24 24" fill="none">
-            <circle cx="10.8" cy="10.8" r="6.8"
-                    stroke="currentColor" stroke-width="1.8"/>
-            <path d="m16 16 5 5"
-                  stroke="currentColor" stroke-width="1.8"
-                  stroke-linecap="round"/>
-          </svg>
-        </button>
-      </div>
+      <button class="search-btn" onclick="toggleSearch()" title="Search Google">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+          <circle cx="10.8" cy="10.8" r="6.3"
+                  stroke="currentColor" stroke-width="1.8"/>
+          <path d="m16 16 4.2 4.2"
+                stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round"/>
+        </svg>
+      </button>
     </header>
 
-    <section class="content" id="content">
+    <div class="workspace" id="workspace">
 
       <!-- HOME -->
-      <div class="home" id="homePage">
+      <section class="home" id="homePage">
         <div class="home-message">
-
-          <svg class="home-mark" viewBox="0 0 50 50" fill="none">
-            <rect x="4" y="4" width="42" height="42" rx="13" fill="#17171B"/>
-            <path d="M14 25C14 18.5 19 14 25.2 14C31.3 14 36 18.5 36 25C36 31.5 31.2 36 25 36C19 36 14 31.5 14 25Z"
-                  stroke="white" stroke-width="3"/>
-            <circle cx="34" cy="15.5" r="3" fill="#8B7CFF"/>
-          </svg>
-
-          <p>Select an app from the left to get started.</p>
-
+          Select an app from the left to get started.
         </div>
+      </section>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-panel" id="searchPanel">
+      <div class="search-input-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <circle cx="10.8" cy="10.8" r="6.3"
+                  stroke="#777" stroke-width="1.7"/>
+          <path d="m16 16 4.2 4.2"
+                stroke="#777" stroke-width="1.7"
+                stroke-linecap="round"/>
+        </svg>
+
+        <input
+          id="searchInput"
+          class="search-input"
+          placeholder="Search Google..."
+          autocomplete="off"
+        >
       </div>
 
-      <!-- NOTES -->
-      <div class="panel" id="notesPage" style="display:none">
-
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">Notes</div>
-            <div class="panel-subtitle">Your notes are saved automatically.</div>
-          </div>
-        </div>
-
-        <div class="note-wrap">
-          <textarea
-            id="notes"
-            class="notes"
-            placeholder="Start writing..."
-            oninput="saveNotes()"></textarea>
-
-          <div class="save-status" id="saveStatus">
-            Saved locally
-          </div>
-        </div>
-
+      <div class="search-hint">
+        Press Enter to search · Esc to close · Ctrl/Cmd + K
       </div>
-
-      <!-- SAVED -->
-      <div class="panel" id="savedPage" style="display:none">
-
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">Saved URLs</div>
-            <div class="panel-subtitle">Keep useful websites in one place.</div>
-          </div>
-        </div>
-
-        <div class="saved-list" id="savedList"></div>
-
-      </div>
-
-      <!-- SETTINGS -->
-      <div class="panel" id="settingsPage" style="display:none">
-
-        <div class="panel-head">
-          <div>
-            <div class="panel-title">Settings</div>
-            <div class="panel-subtitle">Customize your LOOPIN workspace.</div>
-          </div>
-        </div>
-
-        <div class="settings-card">
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">Apps</div>
-              <div class="setting-desc">
-                Restore the default app arrangement.
-              </div>
-            </div>
-
-            <button class="setting-button" onclick="resetApps()">
-              Reset Apps
-            </button>
-          </div>
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">Notes</div>
-              <div class="setting-desc">
-                Delete your locally stored notes.
-              </div>
-            </div>
-
-            <button class="setting-button danger" onclick="clearNotes()">
-              Clear Notes
-            </button>
-          </div>
-
-          <div class="setting-row">
-            <div>
-              <div class="setting-name">Saved URLs</div>
-              <div class="setting-desc">
-                Remove all saved website links.
-              </div>
-            </div>
-
-            <button class="setting-button danger" onclick="clearSaved()">
-              Clear URLs
-            </button>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
+    </div>
 
   </main>
-</div>
-
-
-<!-- SEARCH -->
-<div class="search-overlay" id="searchOverlay" onclick="closeSearchOutside(event)">
-
-  <div class="search-box">
-
-    <div class="search-input-wrap">
-
-      <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="10.8" cy="10.8" r="6.8"
-                stroke="currentColor" stroke-width="1.8"/>
-        <path d="m16 16 5 5"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linecap="round"/>
-      </svg>
-
-      <input
-        id="searchInput"
-        class="search-input"
-        placeholder="Search Google..."
-        autocomplete="off"
-        onkeydown="handleSearch(event)"
-      >
-
-    </div>
-
-    <div class="search-hint">
-      Type your search and press Enter · Esc to close
-    </div>
-
-  </div>
 
 </div>
-
 
 <!-- ADD APP MODAL -->
-<div class="modal-bg" id="addModal">
+<div class="modal-layer" id="addModal">
 
   <div class="modal">
 
     <div class="modal-head">
       <div class="modal-title">Add App</div>
-
-      <button class="close" onclick="closeAddApp()">✕</button>
+      <button class="close-btn" onclick="closeModal('addModal')">×</button>
     </div>
 
-    <div class="form-group">
-      <label class="form-label">App name</label>
-      <input
-        id="appName"
-        class="form-input"
-        placeholder="Example: Notion"
-      >
-    </div>
+    <input
+      id="appSearch"
+      class="input app-search"
+      placeholder="Search apps..."
+      oninput="filterAppChoices()"
+    >
 
-    <div class="form-group">
-      <label class="form-label">Website URL</label>
-      <input
-        id="appUrl"
-        class="form-input"
-        placeholder="https://example.com"
-      >
-    </div>
+    <div class="app-choices" id="appChoices"></div>
 
-    <div class="form-group">
-      <label class="form-label">Icon letter</label>
-      <input
-        id="appLetter"
-        class="form-input"
-        maxlength="2"
-        placeholder="N"
-      >
-    </div>
+    <button class="add-choice" onclick="showCustomForm()">
+      + Add Custom App
+    </button>
 
-    <div class="form-actions">
+    <div class="custom-form" id="customForm">
 
-      <button class="btn btn-secondary" onclick="closeAddApp()">
-        Cancel
-      </button>
+      <label class="modal-label">App name</label>
+      <input id="customName" class="input" placeholder="Example: Notion">
 
-      <button class="btn btn-primary" onclick="addApp()">
-        Add App
-      </button>
+      <label class="modal-label">App URL</label>
+      <input id="customUrl" class="input" placeholder="https://example.com">
+
+      <label class="modal-label">Icon letter</label>
+      <input id="customLetter" class="input" maxlength="2" placeholder="N">
+
+      <div class="modal-actions">
+        <button class="secondary-btn" onclick="hideCustomForm()">
+          Back
+        </button>
+
+        <button class="primary-btn" onclick="addCustomApp()">
+          Add App
+        </button>
+      </div>
 
     </div>
 
   </div>
-
 </div>
 
+<!-- CONTEXT MENU -->
+<div class="context-menu" id="contextMenu">
+  <button class="context-item" onclick="contextOpen()">
+    Open App
+  </button>
+
+  <button class="context-item remove" onclick="contextRemove()">
+    Remove App
+  </button>
+</div>
 
 <script>
 
 /* =========================================================
-   DEFAULT APPS
+   APP DATABASE
 ========================================================= */
 
-const defaultApps = [
+const APP_LIBRARY = [
 
   {
     id:"whatsapp",
     name:"WhatsApp",
     url:"https://web.whatsapp.com/",
-    type:"whatsapp"
+    color:"#25D366",
+    icon:`
+      <svg viewBox="0 0 40 40">
+        <rect width="40" height="40" rx="10" fill="#25D366"/>
+        <path d="M20 10.5a9.2 9.2 0 0 0-7.9 13.9L10.5 29l4.8-1.5A9.2 9.2 0 1 0 20 10.5Z"
+              fill="white"/>
+        <path d="M16.2 15.4c.3-.3.6-.3.9-.1l1.2 1.7c.2.3.2.6-.1.9l-.7.7c.7 1.3 1.8 2.3 3.1 3l.7-.7c.3-.3.6-.3.9-.1l1.7 1.1c.3.2.4.6.2.9-.5.8-1.2 1.2-2 1.1-3.7-.4-7.4-4.1-7.8-7.8-.1-.7.3-1.4 1.1-2Z"
+              fill="#25D366"/>
+      </svg>`
   },
 
   {
     id:"instagram",
     name:"Instagram",
     url:"https://www.instagram.com/",
-    type:"instagram"
+    color:"#E1306C",
+    icon:`
+      <svg viewBox="0 0 40 40">
+        <defs>
+          <linearGradient id="ig" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#F58529"/>
+            <stop offset=".5" stop-color="#DD2A7B"/>
+            <stop offset="1" stop-color="#8134AF"/>
+          </linearGradient>
+        </defs>
+        <rect width="40" height="40" rx="10" fill="url(#ig)"/>
+        <rect x="10" y="10" width="20" height="20" rx="6"
+              fill="none" stroke="white" stroke-width="2"/>
+        <circle cx="20" cy="20" r="4.5"
+                fill="none" stroke="white" stroke-width="2"/>
+        <circle cx="26.5" cy="13.5" r="1.5" fill="white"/>
+      </svg>`
   },
 
   {
     id:"gmail",
     name:"Gmail",
     url:"https://mail.google.com/",
-    type:"gmail"
+    color:"#EA4335",
+    icon:`
+      <svg viewBox="0 0 40 40">
+        <rect width="40" height="40" rx="10" fill="#fff"/>
+        <path d="M8 13.5 20 22l12-8.5v13.8A3.7 3.7 0 0 1 28.3 31H11.7A3.7 3.7 0 0 1 8 27.3V13.5Z"
+              fill="#fff" stroke="#ddd"/>
+        <path d="M8 13.5 20 22l12-8.5"
+              fill="none" stroke="#EA4335" stroke-width="2.4"/>
+        <path d="M8 27V13.5M32 27V13.5"
+              stroke="#4285F4" stroke-width="2"/>
+      </svg>`
   },
 
   {
     id:"outlook",
     name:"Outlook",
     url:"https://outlook.live.com/",
-    type:"outlook"
+    color:"#0078D4",
+    icon:`
+      <svg viewBox="0 0 40 40">
+        <rect width="40" height="40" rx="10" fill="#0078D4"/>
+        <rect x="7" y="11" width="16" height="18" rx="2.5" fill="#fff"/>
+        <path d="M8 15.5 15 21l7-5.5"
+              fill="none" stroke="#0078D4" stroke-width="1.7"/>
+        <rect x="22" y="14" width="11" height="12" rx="2" fill="#005A9E"/>
+        <path d="M25 17h5M25 20h5M25 23h3"
+              stroke="#fff" stroke-width="1.2"
+              stroke-linecap="round"/>
+      </svg>`
   },
 
   {
     id:"linkedin",
     name:"LinkedIn",
     url:"https://www.linkedin.com/",
-    type:"linkedin"
+    color:"#0A66C2",
+    icon:`
+      <svg viewBox="0 0 40 40">
+        <rect width="40" height="40" rx="10" fill="#0A66C2"/>
+        <circle cx="12" cy="12" r="2" fill="white"/>
+        <path d="M10 16v13M16 29V16m0 6c0-4 7-5 7 0v7"
+              stroke="white" stroke-width="2.2"
+              stroke-linecap="round"/>
+      </svg>`
   },
 
   {
     id:"copilot",
     name:"Copilot",
     url:"https://copilot.microsoft.com/",
-    type:"copilot"
+    color:"#111",
+    icon:`
+      <svg viewBox="0 0 40 40">
+        <rect width="40" height="40" rx="10" fill="#111"/>
+        <path d="M10 24c3-8 7-12 11-7l2 3c3 4 6 2 7-3"
+              fill="none" stroke="#fff" stroke-width="2.2"
+              stroke-linecap="round"/>
+        <path d="M10 28c3-5 6-6 9-2 3 4 7 3 11-2"
+              fill="none" stroke="#9B7CFF" stroke-width="2.2"
+              stroke-linecap="round"/>
+      </svg>`
   },
 
   {
     id:"chatgpt",
     name:"ChatGPT",
     url:"https://chatgpt.com/",
-    type:"chatgpt"
+    color:"#111",
+    icon:`
+      <svg viewBox="0 0 40 40">
+        <rect width="40" height="40" rx="10" fill="#111"/>
+        <path d="M20 10.5a5 5 0 0 1 4.9 4.2 5 5 0 0 1 4.4 5.1 5 5 0 0 1-3.1 4.6 5 5 0 0 1-4.8 5.1 5 5 0 0 1-4.8-3.4 5 5 0 0 1-4.4-5.1 5 5 0 0 1 3.1-4.6A5 5 0 0 1 20 10.5Z"
+              fill="none" stroke="white" stroke-width="1.7"/>
+        <path d="m15.5 15 9 5m-9 5 9-5m-9 0 4.5-7.8m0 15.6 4.5-7.8"
+              stroke="white" stroke-width="1.35"
+              stroke-linecap="round"/>
+      </svg>`
+  },
+
+  {
+    id:"notion",
+    name:"Notion",
+    url:"https://www.notion.so/",
+    color:"#111",
+    letter:"N"
+  },
+
+  {
+    id:"slack",
+    name:"Slack",
+    url:"https://app.slack.com/",
+    color:"#611F69",
+    letter:"S"
+  },
+
+  {
+    id:"teams",
+    name:"Microsoft Teams",
+    url:"https://teams.microsoft.com/",
+    color:"#6264A7",
+    letter:"T"
+  },
+
+  {
+    id:"drive",
+    name:"Google Drive",
+    url:"https://drive.google.com/",
+    color:"#4285F4",
+    letter:"D"
+  },
+
+  {
+    id:"calendar",
+    name:"Google Calendar",
+    url:"https://calendar.google.com/",
+    color:"#4285F4",
+    letter:"C"
+  },
+
+  {
+    id:"youtube",
+    name:"YouTube",
+    url:"https://www.youtube.com/",
+    color:"#FF0000",
+    letter:"▶"
+  },
+
+  {
+    id:"docs",
+    name:"Google Docs",
+    url:"https://docs.google.com/",
+    color:"#4285F4",
+    letter:"D"
+  },
+
+  {
+    id:"sheets",
+    name:"Google Sheets",
+    url:"https://sheets.google.com/",
+    color:"#188038",
+    letter:"S"
+  },
+
+  {
+    id:"github",
+    name:"GitHub",
+    url:"https://github.com/",
+    color:"#111",
+    letter:"GH"
+  },
+
+  {
+    id:"canva",
+    name:"Canva",
+    url:"https://www.canva.com/",
+    color:"#7B2FF7",
+    letter:"C"
+  },
+
+  {
+    id:"zoom",
+    name:"Zoom",
+    url:"https://zoom.us/",
+    color:"#2D8CFF",
+    letter:"Z"
+  },
+
+  {
+    id:"trello",
+    name:"Trello",
+    url:"https://trello.com/",
+    color:"#0C66E4",
+    letter:"T"
+  },
+
+  {
+    id:"dropbox",
+    name:"Dropbox",
+    url:"https://www.dropbox.com/",
+    color:"#0061FF",
+    letter:"D"
   }
 
 ];
 
 
 /* =========================================================
-   ICONS
+   DEFAULT APPS
 ========================================================= */
 
-function icon(type){
-
-  if(type==="whatsapp"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <circle cx="16" cy="16" r="15" fill="#25D366"/>
-        <path d="M22.4 9.8A9 9 0 0 0 7 16.2c0 1.6.4 3.1 1.2 4.4L7 25l4.5-1.2a9 9 0 0 0 4.2 1c5 0 9-4 9-9 0-2.3-.9-4.4-2.3-6Z"
-              fill="white"/>
-        <path d="M12.1 11.8c.3-.3.6-.3.9-.1l1.3 1c.3.2.4.5.2.8l-.6.8c.8 1.5 2 2.5 3.5 3.2l.7-.7c.2-.2.6-.3.9-.1l1.4.8c.3.2.4.5.3.8-.4 1.2-1.4 1.8-2.5 1.5-3.2-.8-5.9-3-7.4-6-.5-.9-.2-1.7.3-2Z"
-              fill="#25D366"/>
-      </svg>
-    `;
-  }
-
-  if(type==="instagram"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <defs>
-          <linearGradient id="ig" x1="0" y1="1" x2="1" y2="0">
-            <stop stop-color="#FEDA75"/>
-            <stop offset=".35" stop-color="#FA7E1E"/>
-            <stop offset=".7" stop-color="#D62976"/>
-            <stop offset="1" stop-color="#4F5BD5"/>
-          </linearGradient>
-        </defs>
-        <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#ig)"/>
-        <rect x="8" y="8" width="16" height="16" rx="5"
-              fill="none" stroke="white" stroke-width="2"/>
-        <circle cx="16" cy="16" r="4"
-                fill="none" stroke="white" stroke-width="2"/>
-        <circle cx="22" cy="10" r="1.4" fill="white"/>
-      </svg>
-    `;
-  }
-
-  if(type==="gmail"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <rect x="3" y="5" width="26" height="22" rx="5" fill="#fff"/>
-        <path d="M5 8l11 8L27 8v14H5V8Z"
-              fill="none" stroke="#EA4335" stroke-width="2.5"/>
-        <path d="M5 9l11 8 11-8"
-              fill="none" stroke="#4285F4" stroke-width="2.5"/>
-      </svg>
-    `;
-  }
-
-  if(type==="outlook"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <rect x="3" y="7" width="19" height="18" rx="3" fill="#0A64D8"/>
-        <path d="M16 9h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H16V9Z"
-              fill="#1674E8"/>
-        <path d="M18 12l6 4 5-4"
-              fill="none" stroke="white" stroke-width="1.5"/>
-        <text x="7" y="20" fill="white"
-              font-size="10" font-weight="700">O</text>
-      </svg>
-    `;
-  }
-
-  if(type==="linkedin"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <rect x="2" y="2" width="28" height="28" rx="5" fill="#0A66C2"/>
-        <circle cx="9" cy="10" r="2" fill="white"/>
-        <path d="M7.5 14v10M13 24V14m0 4c.5-3 7-4 7 1v5"
-              stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-      </svg>
-    `;
-  }
-
-  if(type==="copilot"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <defs>
-          <linearGradient id="cp" x1="0" y1="0" x2="1" y2="1">
-            <stop stop-color="#6D5DFB"/>
-            <stop offset="1" stop-color="#25C6DA"/>
-          </linearGradient>
-        </defs>
-        <rect x="2" y="2" width="28" height="28" rx="9" fill="url(#cp)"/>
-        <path d="M9 18c1-5 4-7 7-4l2 2c2 2 4 1 5-2"
-              fill="none" stroke="white" stroke-width="2.2"
-              stroke-linecap="round"/>
-        <path d="M9 21c2 2 4 2 6 0l2-2c2-2 4-1 6 1"
-              fill="none" stroke="white" stroke-width="2.2"
-              stroke-linecap="round"/>
-      </svg>
-    `;
-  }
-
-  if(type==="chatgpt"){
-    return `
-      <svg viewBox="0 0 32 32">
-        <rect x="2" y="2" width="28" height="28" rx="9" fill="#111"/>
-        <path d="M16 8a5 5 0 0 1 4.8 6.2A5 5 0 0 1 23 23a5 5 0 0 1-7 1.8A5 5 0 0 1 8.2 20a5 5 0 0 1 1-7.2A5 5 0 0 1 16 8Z"
-              fill="none" stroke="white" stroke-width="1.5"/>
-        <path d="M12 11l8 4m-9 6 9-6m-4 9V15m-7 2 8 4"
-              stroke="white" stroke-width="1.2"
-              stroke-linecap="round"/>
-      </svg>
-    `;
-  }
-
-  return "";
-}
+const DEFAULT_IDS = [
+  "whatsapp",
+  "instagram",
+  "gmail",
+  "outlook",
+  "linkedin",
+  "copilot",
+  "chatgpt"
+];
 
 
 /* =========================================================
    STORAGE
 ========================================================= */
 
-const APP_KEY = "loopin_apps_v3";
-const NOTES_KEY = "loopin_notes_v3";
-const SAVED_KEY = "loopin_saved_v3";
-
-
 let apps = loadApps();
-
 
 function loadApps(){
 
   try{
 
-    const saved = localStorage.getItem(APP_KEY);
+    const saved = JSON.parse(
+      localStorage.getItem("loopin_apps")
+    );
 
-    if(saved){
-      return JSON.parse(saved);
+    if(Array.isArray(saved) && saved.length){
+      return saved;
     }
 
   }catch(e){}
 
-  return JSON.parse(JSON.stringify(defaultApps));
+  return DEFAULT_IDS
+    .map(id => APP_LIBRARY.find(a => a.id === id))
+    .filter(Boolean);
 }
 
 
 function saveApps(){
-
-  localStorage.setItem(APP_KEY,JSON.stringify(apps));
-
+  localStorage.setItem(
+    "loopin_apps",
+    JSON.stringify(apps)
+  );
 }
 
 
 /* =========================================================
-   RENDER APPS
+   RENDER SIDEBAR
 ========================================================= */
 
 function renderApps(){
 
-  const container = document.getElementById("apps");
+  const list = document.getElementById("appsList");
 
-  container.innerHTML = "";
+  list.innerHTML = "";
 
   apps.forEach((app,index)=>{
 
     const item = document.createElement("div");
 
     item.className = "app-item";
-
     item.draggable = true;
-
     item.dataset.index = index;
+    item.dataset.name = app.name;
 
-    item.title = app.name;
+    item.innerHTML = renderAppIcon(app);
 
-    let visual = "";
+    item.onclick = () => openApp(app);
 
-    if(app.type){
+    /* right click remove */
+    item.addEventListener("contextmenu",e=>{
+      e.preventDefault();
 
-      visual = `
-        <div class="app-icon">
-          ${icon(app.type)}
-        </div>
-      `;
-
-    }else{
-
-      visual = `
-        <div
-          class="app-letter"
-          style="background:${app.color || "#6c5ce7"}">
-          ${(app.letter || app.name.charAt(0)).toUpperCase()}
-        </div>
-      `;
-
-    }
-
-    item.innerHTML = `
-      ${visual}
-      <span class="tooltip">${escapeHTML(app.name)}</span>
-    `;
-
-
-    item.addEventListener("click",()=>{
-
-      openApp(app);
-
+      showContextMenu(
+        e.clientX,
+        e.clientY,
+        index
+      );
     });
 
+    /* drag */
 
-    /* DRAG */
-
-    item.addEventListener("dragstart",e=>{
-
-      e.dataTransfer.setData("text/plain",index);
-
-      item.style.opacity=".45";
-
+    item.addEventListener("dragstart",()=>{
+      draggedIndex=index;
+      item.classList.add("dragging");
     });
-
 
     item.addEventListener("dragend",()=>{
+      draggedIndex=null;
+      item.classList.remove("dragging");
 
-      item.style.opacity="1";
-
+      document.querySelectorAll(".app-item")
+        .forEach(x=>x.classList.remove("drag-over"));
     });
-
 
     item.addEventListener("dragover",e=>{
-
       e.preventDefault();
 
+      if(draggedIndex===null || draggedIndex===index){
+        return;
+      }
+
+      item.classList.add("drag-over");
     });
 
+    item.addEventListener("dragleave",()=>{
+      item.classList.remove("drag-over");
+    });
 
     item.addEventListener("drop",e=>{
-
       e.preventDefault();
 
-      const from = Number(
-        e.dataTransfer.getData("text/plain")
+      item.classList.remove("drag-over");
+
+      if(draggedIndex===null || draggedIndex===index){
+        return;
+      }
+
+      const moved = apps.splice(
+        draggedIndex,
+        1
+      )[0];
+
+      apps.splice(
+        index,
+        0,
+        moved
       );
 
-      const to = Number(item.dataset.index);
-
-      if(from===to) return;
-
-      const moved = apps.splice(from,1)[0];
-
-      apps.splice(to,0,moved);
-
       saveApps();
-
       renderApps();
-
     });
 
+    /* mobile long press */
 
-    container.appendChild(item);
+    let pressTimer;
+
+    item.addEventListener("touchstart",e=>{
+
+      pressTimer=setTimeout(()=>{
+
+        const touch=e.touches[0];
+
+        showContextMenu(
+          touch.clientX,
+          touch.clientY,
+          index
+        );
+
+      },650);
+
+    },{passive:true});
+
+    item.addEventListener("touchend",()=>{
+      clearTimeout(pressTimer);
+    });
+
+    item.addEventListener("touchmove",()=>{
+      clearTimeout(pressTimer);
+    });
+
+    list.appendChild(item);
 
   });
 
 }
 
 
-renderApps();
+/* =========================================================
+   ICON
+========================================================= */
+
+function renderAppIcon(app){
+
+  if(app.icon){
+
+    return `
+      <div class="app-icon">
+        ${app.icon}
+      </div>
+    `;
+
+  }
+
+  return `
+    <div
+      class="app-letter"
+      style="background:${app.color || "#111"}"
+    >
+      ${escapeHtml(app.letter || app.name.charAt(0))}
+    </div>
+  `;
+}
 
 
 /* =========================================================
-   APP OPEN
+   OPEN APP
 ========================================================= */
 
 function openApp(app){
 
-  document.querySelectorAll(".app-item")
-    .forEach(x=>x.classList.remove("active"));
-
-  hideAllPages();
-
-  document.getElementById("pageTitle").textContent = app.name;
-
   /*
-    Direct navigation.
-    User's existing browser login session is used
-    whenever the service supports it.
+    Important:
+    External services such as WhatsApp, Instagram,
+    Gmail etc. can block iframe embedding.
+
+    We therefore use the user's normal browser session
+    and navigate to the official app URL.
   */
 
   window.location.assign(app.url);
-
 }
 
 
@@ -1345,34 +1507,44 @@ function openApp(app){
    HOME
 ========================================================= */
 
-function showHome(){
+function goHome(){
 
-  hideAllPages();
-
-  document.getElementById("homePage").style.display="flex";
-
-  document.getElementById("pageTitle").textContent="LOOPIN";
-
-  clearTools();
-
-}
-
-
-function hideAllPages(){
-
-  document.getElementById("homePage").style.display="none";
-  document.getElementById("notesPage").style.display="none";
-  document.getElementById("savedPage").style.display="none";
-  document.getElementById("settingsPage").style.display="none";
+  document.getElementById("workspace").innerHTML = `
+    <section class="home">
+      <div class="home-message">
+        Select an app from the left to get started.
+      </div>
+    </section>
+  `;
 
 }
 
 
-function clearTools(){
+/* =========================================================
+   PAGES
+========================================================= */
 
-  document.querySelectorAll(".tool")
-    .forEach(x=>x.classList.remove("active"));
+function openPage(page){
 
+  const workspace =
+    document.getElementById("workspace");
+
+  if(page==="notes"){
+    renderNotes(workspace);
+    return;
+  }
+
+  if(page==="saved"){
+    renderSaved(workspace);
+    return;
+  }
+
+  if(page==="settings"){
+    renderSettings(workspace);
+    return;
+  }
+
+  goHome();
 }
 
 
@@ -1380,51 +1552,47 @@ function clearTools(){
    NOTES
 ========================================================= */
 
-function openNotes(){
+function renderNotes(workspace){
 
-  hideAllPages();
+  const saved =
+    localStorage.getItem("loopin_notes") || "";
 
-  document.getElementById("notesPage").style.display="block";
+  workspace.innerHTML = `
 
-  document.getElementById("pageTitle").textContent="Notes";
+    <section class="page">
 
-  clearTools();
+      <div class="page-header">
 
-  document.getElementById("notesTool")
-    .classList.add("active");
+        <div class="page-title">
+          Notes
+        </div>
 
-  document.getElementById("notes").value =
-    localStorage.getItem(NOTES_KEY) || "";
+        <div class="page-subtitle">
+          Your notes are saved automatically on this device.
+        </div>
 
-}
+      </div>
 
+      <textarea
+        id="notesBox"
+        class="notes-box"
+        placeholder="Start writing..."
+      ></textarea>
 
-function saveNotes(){
+    </section>
+  `;
 
-  const value = document.getElementById("notes").value;
+  const box =
+    document.getElementById("notesBox");
 
-  localStorage.setItem(NOTES_KEY,value);
+  box.value=saved;
 
-  document.getElementById("saveStatus").textContent =
-    "Saved locally · " +
-    new Date().toLocaleTimeString([],{
-      hour:"2-digit",
-      minute:"2-digit"
-    });
-
-}
-
-
-function clearNotes(){
-
-  if(!confirm("Clear all notes?")) return;
-
-  localStorage.removeItem(NOTES_KEY);
-
-  document.getElementById("notes").value="";
-
-  document.getElementById("saveStatus").textContent =
-    "Notes cleared";
+  box.addEventListener("input",()=>{
+    localStorage.setItem(
+      "loopin_notes",
+      box.value
+    );
+  });
 
 }
 
@@ -1433,31 +1601,13 @@ function clearNotes(){
    SAVED URLS
 ========================================================= */
 
-function openSaved(){
-
-  hideAllPages();
-
-  document.getElementById("savedPage").style.display="block";
-
-  document.getElementById("pageTitle").textContent="Saved URLs";
-
-  clearTools();
-
-  document.getElementById("savedTool")
-    .classList.add("active");
-
-  renderSaved();
-
-}
-
-
-function getSaved(){
+function getSavedUrls(){
 
   try{
 
     return JSON.parse(
-      localStorage.getItem(SAVED_KEY) || "[]"
-    );
+      localStorage.getItem("loopin_urls")
+    ) || [];
 
   }catch(e){
 
@@ -1467,132 +1617,172 @@ function getSaved(){
 
 }
 
+function saveUrls(data){
 
-function renderSaved(){
+  localStorage.setItem(
+    "loopin_urls",
+    JSON.stringify(data)
+  );
 
-  const list = document.getElementById("savedList");
+}
 
-  const saved = getSaved();
 
-  if(!saved.length){
+function renderSaved(workspace){
 
-    list.innerHTML = `
-      <div class="saved-empty">
+  const urls=getSavedUrls();
+
+  workspace.innerHTML=`
+
+    <section class="page">
+
+      <div class="page-header">
+
+        <div class="page-title">
+          Saved URLs
+        </div>
+
+        <div class="page-subtitle">
+          Keep useful links available inside LOOPIN.
+        </div>
+
+      </div>
+
+      <div class="url-add">
+
+        <input
+          id="urlInput"
+          placeholder="https://example.com"
+        >
+
+        <button
+          class="primary-btn"
+          onclick="addSavedUrl()"
+        >
+          Save URL
+        </button>
+
+      </div>
+
+      <div
+        class="saved-list"
+        id="savedList"
+      ></div>
+
+    </section>
+  `;
+
+  drawSavedUrls();
+
+}
+
+
+function addSavedUrl(){
+
+  const input =
+    document.getElementById("urlInput");
+
+  let url=input.value.trim();
+
+  if(!url){
+    return;
+  }
+
+  if(!/^https?:\/\//i.test(url)){
+    url="https://"+url;
+  }
+
+  const data=getSavedUrls();
+
+  data.unshift({
+    url:url,
+    title:getDomain(url)
+  });
+
+  saveUrls(data);
+
+  input.value="";
+
+  drawSavedUrls();
+
+}
+
+
+function drawSavedUrls(){
+
+  const list=
+    document.getElementById("savedList");
+
+  if(!list){
+    return;
+  }
+
+  const urls=getSavedUrls();
+
+  if(!urls.length){
+
+    list.innerHTML=`
+      <div class="empty">
         No saved URLs yet.
       </div>
     `;
 
     return;
-
   }
 
   list.innerHTML="";
 
-  saved.forEach((item,index)=>{
+  urls.forEach((item,index)=>{
 
-    const row = document.createElement("div");
+    const card=document.createElement("div");
 
-    row.className="saved-item";
+    card.className="saved-card";
 
-    row.innerHTML=`
+    card.innerHTML=`
 
       <div class="saved-info">
 
-        <div class="saved-name">
-          ${escapeHTML(item.name)}
+        <div class="saved-title">
+          ${escapeHtml(item.title)}
         </div>
 
         <div class="saved-url">
-          ${escapeHTML(item.url)}
+          ${escapeHtml(item.url)}
         </div>
 
       </div>
 
       <button
-        class="saved-open"
-        onclick="window.location.assign('${safeJS(item.url)}')">
+        class="small-btn"
+        onclick="window.open('${safeJs(item.url)}','_blank')"
+      >
         Open
       </button>
 
       <button
-        class="delete-btn"
-        onclick="deleteSaved(${index})">
-        ✕
+        class="small-btn danger"
+        onclick="deleteSavedUrl(${index})"
+      >
+        Delete
       </button>
 
     `;
 
-    list.appendChild(row);
+    list.appendChild(card);
 
   });
 
 }
 
 
-function saveCurrentURL(){
+function deleteSavedUrl(index){
 
-  const url = prompt(
-    "Enter website URL:",
-    "https://"
-  );
+  const urls=getSavedUrls();
 
-  if(!url) return;
+  urls.splice(index,1);
 
-  let finalURL=url.trim();
+  saveUrls(urls);
 
-  if(!/^https?:\/\//i.test(finalURL)){
-
-    finalURL="https://"+finalURL;
-
-  }
-
-  let name=prompt(
-    "Enter name:",
-    new URL(finalURL).hostname
-  );
-
-  if(!name) name=new URL(finalURL).hostname;
-
-  const saved=getSaved();
-
-  saved.push({
-    name,
-    url:finalURL
-  });
-
-  localStorage.setItem(
-    SAVED_KEY,
-    JSON.stringify(saved)
-  );
-
-  openSaved();
-
-}
-
-
-function deleteSaved(index){
-
-  const saved=getSaved();
-
-  saved.splice(index,1);
-
-  localStorage.setItem(
-    SAVED_KEY,
-    JSON.stringify(saved)
-  );
-
-  renderSaved();
-
-}
-
-
-function clearSaved(){
-
-  if(!confirm("Delete all saved URLs?")) return;
-
-  localStorage.removeItem(SAVED_KEY);
-
-  renderSaved();
+  drawSavedUrls();
 
 }
 
@@ -1601,210 +1791,642 @@ function clearSaved(){
    SETTINGS
 ========================================================= */
 
-function openSettings(){
+function renderSettings(workspace){
 
-  hideAllPages();
+  workspace.innerHTML=`
 
-  document.getElementById("settingsPage").style.display="block";
+    <section class="page">
 
-  document.getElementById("pageTitle").textContent="Settings";
+      <div class="page-header">
 
-  clearTools();
+        <div class="page-title">
+          Settings
+        </div>
 
-  document.getElementById("settingsTool")
-    .classList.add("active");
+        <div class="page-subtitle">
+          Customize your LOOPIN workspace.
+        </div>
+
+      </div>
+
+      <div class="settings-grid">
+
+        <div class="setting-card">
+
+          <div class="setting-title">
+            Apps
+          </div>
+
+          <div class="setting-text">
+            Reorder, add or remove apps from your sidebar.
+          </div>
+
+          <button
+            class="setting-action"
+            onclick="openAddApp()"
+          >
+            + Add App
+          </button>
+
+        </div>
+
+
+        <div class="setting-card">
+
+          <div class="setting-title">
+            Reset Apps
+          </div>
+
+          <div class="setting-text">
+            Restore the default LOOPIN apps.
+          </div>
+
+          <button
+            class="setting-action"
+            onclick="resetApps()"
+          >
+            Reset Apps
+          </button>
+
+        </div>
+
+
+        <div class="setting-card">
+
+          <div class="setting-title">
+            Notes
+          </div>
+
+          <div class="setting-text">
+            Delete all locally saved notes.
+          </div>
+
+          <button
+            class="setting-action"
+            onclick="clearNotes()"
+          >
+            Clear Notes
+          </button>
+
+        </div>
+
+
+        <div class="setting-card">
+
+          <div class="setting-title">
+            Saved URLs
+          </div>
+
+          <div class="setting-text">
+            Delete all saved links from this device.
+          </div>
+
+          <button
+            class="setting-action"
+            onclick="clearUrls()"
+          >
+            Clear URLs
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="manage-apps">
+
+        <div class="page-header"
+             style="margin-top:35px;margin-bottom:8px">
+
+          <div class="page-title"
+               style="font-size:19px">
+            Manage Apps
+          </div>
+
+          <div class="page-subtitle">
+            Remove any app whenever you want.
+          </div>
+
+        </div>
+
+        <div id="manageAppList"></div>
+
+      </div>
+
+    </section>
+  `;
+
+  drawManageApps();
 
 }
 
 
-function resetApps(){
+function drawManageApps(){
 
-  if(!confirm("Restore default apps and order?")) return;
+  const box=
+    document.getElementById("manageAppList");
 
-  apps=JSON.parse(
-    JSON.stringify(defaultApps)
-  );
-
-  saveApps();
-
-  renderApps();
-
-}
-
-
- /* =========================================================
-    ADD APP
- ========================================================= */
-
-function openAddApp(){
-
-  document.getElementById("addModal")
-    .classList.add("show");
-
-  setTimeout(()=>{
-
-    document.getElementById("appName").focus();
-
-  },100);
-
-}
-
-
-function closeAddApp(){
-
-  document.getElementById("addModal")
-    .classList.remove("show");
-
-  document.getElementById("appName").value="";
-  document.getElementById("appUrl").value="";
-  document.getElementById("appLetter").value="";
-
-}
-
-
-function addApp(){
-
-  const name=
-    document.getElementById("appName")
-    .value.trim();
-
-  let url=
-    document.getElementById("appUrl")
-    .value.trim();
-
-  const letter=
-    document.getElementById("appLetter")
-    .value.trim()
-    .slice(0,2);
-
-  if(!name){
-
-    alert("Please enter app name.");
-
+  if(!box){
     return;
-
   }
 
-  if(!url){
+  box.innerHTML="";
 
-    alert("Please enter website URL.");
+  apps.forEach((app,index)=>{
 
-    return;
+    const row=document.createElement("div");
 
-  }
+    row.className="manage-row";
 
-  if(!/^https?:\/\//i.test(url)){
+    row.innerHTML=`
 
-    url="https://"+url;
+      <div class="manage-icon">
+        ${renderAppIcon(app)}
+      </div>
 
-  }
+      <div class="manage-name">
+        ${escapeHtml(app.name)}
+      </div>
 
-  try{
+      <button
+        class="small-btn danger"
+        onclick="removeApp(${index})"
+      >
+        Remove
+      </button>
 
-    new URL(url);
+    `;
 
-  }catch(e){
-
-    alert("Please enter a valid URL.");
-
-    return;
-
-  }
-
-
-  apps.push({
-
-    id:"custom_"+Date.now(),
-
-    name:name,
-
-    url:url,
-
-    letter:letter || name.charAt(0),
-
-    color:"#6c5ce7"
+    box.appendChild(row);
 
   });
-
-
-  saveApps();
-
-  renderApps();
-
-  closeAddApp();
 
 }
 
 
 /* =========================================================
-   GOOGLE SEARCH
+   REMOVE APP
 ========================================================= */
 
-function openSearch(){
+function removeApp(index){
 
-  document.getElementById("searchOverlay")
+  if(index<0 || index>=apps.length){
+    return;
+  }
+
+  const app=apps[index];
+
+  const yes=confirm(
+    `Remove ${app.name} from LOOPIN?`
+  );
+
+  if(!yes){
+    return;
+  }
+
+  apps.splice(index,1);
+
+  saveApps();
+
+  renderApps();
+
+  const settings=
+    document.getElementById("manageAppList");
+
+  if(settings){
+    drawManageApps();
+  }
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetApps(){
+
+  const yes=confirm(
+    "Restore the default LOOPIN apps?"
+  );
+
+  if(!yes){
+    return;
+  }
+
+  apps=DEFAULT_IDS
+    .map(id=>APP_LIBRARY.find(a=>a.id===id))
+    .filter(Boolean);
+
+  saveApps();
+
+  renderApps();
+
+  drawManageApps();
+
+}
+
+
+/* =========================================================
+   CLEAR
+========================================================= */
+
+function clearNotes(){
+
+  if(!confirm("Clear all notes?")){
+    return;
+  }
+
+  localStorage.removeItem("loopin_notes");
+
+  alert("Notes cleared.");
+
+}
+
+
+function clearUrls(){
+
+  if(!confirm("Delete all saved URLs?")){
+    return;
+  }
+
+  localStorage.removeItem("loopin_urls");
+
+  alert("Saved URLs cleared.");
+
+}
+
+
+/* =========================================================
+   ADD APP MODAL
+========================================================= */
+
+function openAddApp(){
+
+  document
+    .getElementById("addModal")
     .classList.add("show");
 
-  const input=
-    document.getElementById("searchInput");
+  document
+    .getElementById("appSearch")
+    .value="";
 
-  input.value="";
+  hideCustomForm();
 
-  setTimeout(()=>input.focus(),80);
+  renderAppChoices();
+
+}
+
+
+function renderAppChoices(){
+
+  const box=
+    document.getElementById("appChoices");
+
+  const query=
+    document
+      .getElementById("appSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+  box.innerHTML="";
+
+  const available=
+    APP_LIBRARY.filter(app=>{
+
+      const matches=
+        app.name
+          .toLowerCase()
+          .includes(query);
+
+      return matches;
+
+    });
+
+  available.forEach(app=>{
+
+    const choice=
+      document.createElement("button");
+
+    choice.className="app-choice";
+
+    choice.type="button";
+
+    choice.innerHTML=`
+
+      <div class="choice-icon">
+        ${renderAppIcon(app)}
+      </div>
+
+      <div class="choice-info">
+
+        <div class="choice-name">
+          ${escapeHtml(app.name)}
+        </div>
+
+        <div class="choice-desc">
+          ${isInstalled(app)
+            ? "Already added"
+            : "Add to sidebar"}
+        </div>
+
+      </div>
+
+      <div style="
+        font-size:15px;
+        color:${isInstalled(app) ? "#aaa" : "#111"}
+      ">
+        ${isInstalled(app) ? "✓" : "+"}
+      </div>
+
+    `;
+
+    choice.onclick=()=>{
+
+      if(isInstalled(app)){
+
+        alert(`${app.name} is already in your sidebar.`);
+
+        return;
+
+      }
+
+      apps.push({...app});
+
+      saveApps();
+
+      renderApps();
+
+      closeModal("addModal");
+
+    };
+
+    box.appendChild(choice);
+
+  });
+
+}
+
+
+function filterAppChoices(){
+  renderAppChoices();
+}
+
+
+function isInstalled(app){
+
+  return apps.some(
+    a=>a.id===app.id
+  );
+
+}
+
+
+/* =========================================================
+   CUSTOM APP
+========================================================= */
+
+function showCustomForm(){
+
+  document
+    .getElementById("customForm")
+    .classList.add("show");
+
+}
+
+
+function hideCustomForm(){
+
+  document
+    .getElementById("customForm")
+    .classList.remove("show");
+
+}
+
+
+function addCustomApp(){
+
+  const name=
+    document
+      .getElementById("customName")
+      .value
+      .trim();
+
+  let url=
+    document
+      .getElementById("customUrl")
+      .value
+      .trim();
+
+  const letter=
+    document
+      .getElementById("customLetter")
+      .value
+      .trim()
+      .toUpperCase();
+
+  if(!name){
+
+    alert("Enter app name.");
+
+    return;
+  }
+
+  if(!url){
+
+    alert("Enter app URL.");
+
+    return;
+  }
+
+  if(!/^https?:\/\//i.test(url)){
+    url="https://"+url;
+  }
+
+  const newApp={
+    id:"custom_"+Date.now(),
+    name:name,
+    url:url,
+    color:"#111",
+    letter:letter || name.charAt(0).toUpperCase()
+  };
+
+  apps.push(newApp);
+
+  saveApps();
+
+  renderApps();
+
+  closeModal("addModal");
+
+  document.getElementById("customName").value="";
+  document.getElementById("customUrl").value="";
+  document.getElementById("customLetter").value="";
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal(id){
+
+  document
+    .getElementById(id)
+    .classList.remove("show");
+
+}
+
+
+/* =========================================================
+   CONTEXT MENU
+========================================================= */
+
+let contextIndex=null;
+
+function showContextMenu(x,y,index){
+
+  contextIndex=index;
+
+  const menu=
+    document.getElementById("contextMenu");
+
+  menu.style.left=
+    Math.min(
+      x,
+      window.innerWidth-175
+    )+"px";
+
+  menu.style.top=
+    Math.min(
+      y,
+      window.innerHeight-90
+    )+"px";
+
+  menu.classList.add("show");
+
+}
+
+
+function hideContextMenu(){
+
+  document
+    .getElementById("contextMenu")
+    .classList.remove("show");
+
+  contextIndex=null;
+
+}
+
+
+function contextOpen(){
+
+  if(contextIndex===null){
+    return;
+  }
+
+  const app=apps[contextIndex];
+
+  hideContextMenu();
+
+  if(app){
+    openApp(app);
+  }
+
+}
+
+
+function contextRemove(){
+
+  if(contextIndex===null){
+    return;
+  }
+
+  const index=contextIndex;
+
+  hideContextMenu();
+
+  removeApp(index);
+
+}
+
+
+document.addEventListener("click",e=>{
+
+  const menu=
+    document.getElementById("contextMenu");
+
+  if(
+    menu.classList.contains("show") &&
+    !menu.contains(e.target)
+  ){
+
+    hideContextMenu();
+
+  }
+
+});
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function toggleSearch(){
+
+  const panel=
+    document.getElementById("searchPanel");
+
+  panel.classList.toggle("show");
+
+  if(panel.classList.contains("show")){
+
+    setTimeout(()=>{
+      document
+        .getElementById("searchInput")
+        .focus();
+    },30);
+
+  }
 
 }
 
 
 function closeSearch(){
 
-  document.getElementById("searchOverlay")
+  document
+    .getElementById("searchPanel")
     .classList.remove("show");
 
 }
 
 
-function closeSearchOutside(e){
+document
+  .getElementById("searchInput")
+  .addEventListener("keydown",e=>{
 
-  if(e.target.id==="searchOverlay"){
+    if(e.key==="Enter"){
 
-    closeSearch();
+      const q=e.target.value.trim();
 
-  }
+      if(q){
 
-}
+        window.location.href=
+          "https://www.google.com/search?q="+
+          encodeURIComponent(q);
 
+      }
 
-function handleSearch(e){
+    }
 
-  if(e.key==="Escape"){
+    if(e.key==="Escape"){
+      closeSearch();
+    }
 
-    closeSearch();
+  });
 
-    return;
-
-  }
-
-  if(e.key==="Enter"){
-
-    const q=
-      document.getElementById("searchInput")
-      .value.trim();
-
-    if(!q) return;
-
-    window.location.assign(
-      "https://www.google.com/search?q="+
-      encodeURIComponent(q)
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   KEYBOARD SHORTCUT
-========================================================= */
 
 document.addEventListener("keydown",e=>{
 
@@ -1815,13 +2437,12 @@ document.addEventListener("keydown",e=>{
 
     e.preventDefault();
 
-    openSearch();
+    const panel=
+      document.getElementById("searchPanel");
 
-  }
-
-  if(e.key==="Escape"){
-
-    closeSearch();
+    if(!panel.classList.contains("show")){
+      toggleSearch();
+    }
 
   }
 
@@ -1829,57 +2450,54 @@ document.addEventListener("keydown",e=>{
 
 
 /* =========================================================
-   MODAL OUTSIDE CLICK
-========================================================= */
-
-document.getElementById("addModal")
-  .addEventListener("click",e=>{
-
-    if(e.target.id==="addModal"){
-
-      closeAddApp();
-
-    }
-
-  });
-
-
-/* =========================================================
    HELPERS
 ========================================================= */
 
-function escapeHTML(str){
+function getDomain(url){
 
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  try{
+
+    return new URL(url).hostname;
+
+  }catch(e){
+
+    return url;
+
+  }
 
 }
 
 
-function safeJS(str){
+function escapeHtml(value){
 
-  return String(str)
-    .replaceAll("\\","\\\\")
-    .replaceAll("'","\\'");
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function safeJs(value){
+
+  return String(value)
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/\n/g,"\\n")
+    .replace(/\r/g,"\\r");
 
 }
 
 
 /* =========================================================
-   OPTIONAL: SAVE URL QUICK ACTION
+   INITIALIZE
 ========================================================= */
 
-/*
-   Double-click the LOOPIN logo to save a URL quickly.
-*/
+let draggedIndex=null;
 
-document.querySelector(".logo-btn")
-  .addEventListener("dblclick",saveCurrentURL);
-
+renderApps();
 
 </script>
 
