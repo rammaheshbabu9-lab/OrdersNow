@@ -2,1728 +2,1885 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ONE MILLION PIXELS HOMEPAGE</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LOOPIN — One Workspace</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#fff;
+  --text:#17171b;
+  --muted:#8b8b95;
+  --line:#eeeeF2;
+  --hover:#f5f5f8;
+  --active:#f0edff;
+  --accent:#6c5ce7;
+  --danger:#e5484d;
 }
 
-body{
-    font-family:Inter,Arial,sans-serif;
-    background:#f7f8fa;
-    color:#111827;
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
 
-.container{
-    width:min(1180px,94%);
-    margin:auto;
+button,input,textarea{
+  font:inherit;
 }
 
-header{
-    background:#fff;
-    border-bottom:1px solid #e5e7eb;
-    position:sticky;
-    top:0;
-    z-index:100;
+button{
+  border:0;
+  background:none;
+  cursor:pointer;
 }
 
-.nav{
-    height:70px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+.app{
+  display:flex;
+  width:100%;
+  height:100vh;
 }
 
-.logo{
-    font-size:20px;
-    font-weight:800;
-    letter-spacing:-.5px;
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+  width:76px;
+  min-width:76px;
+  height:100vh;
+  border-right:1px solid var(--line);
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:13px 8px;
+  z-index:20;
 }
 
-.logo span{
-    color:#2563eb;
+.logo-btn{
+  width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:14px;
+  border-radius:15px;
 }
 
-.nav a{
-    text-decoration:none;
-    color:#374151;
-    font-weight:600;
-    margin-left:24px;
+.logo-btn:hover{
+  background:var(--hover);
 }
 
-.btn{
-    border:0;
-    border-radius:9px;
-    padding:12px 20px;
-    font-weight:700;
-    cursor:pointer;
+.logo-svg{
+  width:40px;
+  height:40px;
 }
 
-.btn-primary{
-    background:#111827;
-    color:white;
+.apps{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width:none;
 }
 
-.btn-blue{
-    background:#2563eb;
-    color:white;
+.apps::-webkit-scrollbar{
+  display:none;
 }
 
-.hero{
-    background:#fff;
-    text-align:center;
-    padding:70px 20px 55px;
+.app-item{
+  width:54px;
+  height:54px;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  transition:.16s ease;
+  cursor:pointer;
+  user-select:none;
 }
 
-.badge{
-    display:inline-block;
-    background:#eff6ff;
-    color:#2563eb;
-    padding:8px 14px;
-    border-radius:30px;
-    font-size:13px;
-    font-weight:700;
-    margin-bottom:18px;
+.app-item:hover{
+  background:var(--hover);
 }
 
-.hero h1{
-    font-size:clamp(34px,6vw,68px);
-    line-height:1;
-    letter-spacing:-2px;
-    margin-bottom:20px;
+.app-item.active{
+  background:var(--active);
 }
 
-.hero p{
-    max-width:700px;
-    margin:auto;
-    color:#6b7280;
-    line-height:1.7;
-    font-size:16px;
+.app-item.active::before{
+  content:"";
+  position:absolute;
+  left:-8px;
+  width:3px;
+  height:22px;
+  border-radius:0 5px 5px 0;
+  background:var(--accent);
 }
 
-.stats{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-    margin-top:35px;
+.app-icon{
+  width:29px;
+  height:29px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:9px;
+  overflow:hidden;
 }
 
-.stat{
-    border:1px solid #e5e7eb;
-    border-radius:14px;
-    padding:22px;
-    background:white;
+.app-icon svg{
+  width:100%;
+  height:100%;
 }
 
-.stat strong{
-    display:block;
-    font-size:27px;
-    margin-bottom:6px;
+.app-letter{
+  width:29px;
+  height:29px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
 }
 
-.stat span{
-    color:#6b7280;
-    font-size:13px;
+.tooltip{
+  position:absolute;
+  left:65px;
+  top:50%;
+  transform:translateY(-50%);
+  background:#17171b;
+  color:#fff;
+  padding:7px 10px;
+  border-radius:8px;
+  font-size:12px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:.12s;
+  z-index:100;
 }
 
-section{
-    padding:60px 0;
+.app-item:hover .tooltip{
+  opacity:1;
 }
 
-.title{
-    text-align:center;
-    margin-bottom:28px;
+.add-app{
+  width:48px;
+  height:48px;
+  margin-top:10px;
+  border:1px dashed #d5d5dc;
+  border-radius:14px;
+  color:#686872;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  transition:.15s;
 }
 
-.title h2{
-    font-size:32px;
-    margin-bottom:8px;
+.add-app:hover{
+  background:var(--hover);
+  color:var(--accent);
+  border-color:var(--accent);
 }
 
-.title p{
-    color:#6b7280;
+.sidebar-spacer{
+  flex:1;
 }
 
-.toolbar{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-bottom:20px;
+.bottom-tools{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
 }
 
-input,
-select,
-textarea{
-    width:100%;
-    padding:13px 14px;
-    border:1px solid #d1d5db;
-    border-radius:9px;
-    outline:none;
-    background:white;
-    font:inherit;
+.tool{
+  width:54px;
+  height:50px;
+  border-radius:14px;
+  color:#777781;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
 }
 
-.toolbar input{
-    flex:1;
-    min-width:220px;
+.tool:hover{
+  background:var(--hover);
+  color:#222;
 }
 
-.toolbar select{
-    width:210px;
+.tool.active{
+  background:var(--active);
+  color:var(--accent);
 }
 
-.wall-box{
-    background:white;
-    border:1px solid #e5e7eb;
-    border-radius:16px;
-    padding:14px;
-    overflow:auto;
+.tool svg{
+  width:21px;
+  height:21px;
 }
 
-.wall{
-    display:grid;
-    grid-template-columns:repeat(20,minmax(35px,1fr));
-    gap:3px;
-    min-width:760px;
+/* ================= MAIN ================= */
+
+.main{
+  flex:1;
+  min-width:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:#fff;
 }
 
-.pixel{
-    aspect-ratio:1;
-    border:1px solid #e5e7eb;
-    background:#fafafa;
-    position:relative;
-    overflow:hidden;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:.15s;
+.topbar{
+  height:64px;
+  min-height:64px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
 }
 
-.pixel:hover{
-    transform:scale(1.05);
-    z-index:2;
-    border-color:#2563eb;
+.page-title{
+  font-size:15px;
+  font-weight:650;
 }
 
-.pixel.sold{
-    background:#fff;
-    border-color:#bfdbfe;
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
 
-.pixel img{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    padding:3px;
+.search-btn{
+  width:38px;
+  height:38px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#5e5e68;
 }
 
-.pixel-no{
-    position:absolute;
-    bottom:1px;
-    right:2px;
-    font-size:7px;
-    color:#9ca3af;
-    background:rgba(255,255,255,.8);
-    padding:1px 2px;
+.search-btn:hover{
+  background:var(--hover);
+  color:#222;
 }
 
-.sold-label{
-    position:absolute;
-    top:1px;
-    left:1px;
-    font-size:6px;
-    background:#16a34a;
-    color:#fff;
-    padding:2px 3px;
-    border-radius:2px;
-    font-weight:800;
+.search-btn svg{
+  width:19px;
+  height:19px;
 }
 
-.pricing{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
+.content{
+  flex:1;
+  overflow:auto;
+  position:relative;
 }
 
-.price-card{
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:16px;
-    padding:25px;
-    text-align:center;
+/* ================= HOME ================= */
+
+.home{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
 }
 
-.price-card h3{
-    margin-bottom:10px;
+.home-message{
+  color:#777781;
+  font-size:15px;
+  letter-spacing:-.1px;
 }
 
-.price{
-    font-size:32px;
-    font-weight:800;
-    margin-bottom:8px;
+.home-message .home-mark{
+  width:42px;
+  height:42px;
+  margin:0 auto 16px;
+  opacity:.55;
 }
 
-.price-card p{
-    color:#6b7280;
-    font-size:14px;
+.home-message p{
+  font-weight:500;
 }
 
-.form-box{
-    max-width:720px;
-    margin:auto;
-    background:#fff;
-    border:1px solid #e5e7eb;
-    border-radius:18px;
-    padding:28px;
+/* ================= NOTES ================= */
+
+.panel{
+  width:100%;
+  height:100%;
+  padding:30px;
+  overflow:auto;
 }
 
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
+.panel-head{
+  max-width:900px;
+  margin:0 auto 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
-.field{
-    margin-bottom:16px;
+.panel-title{
+  font-size:22px;
+  font-weight:700;
 }
 
-.field.full{
-    grid-column:1/-1;
+.panel-subtitle{
+  color:#888891;
+  font-size:13px;
+  margin-top:5px;
 }
 
-.field label{
-    display:block;
-    font-size:13px;
-    font-weight:700;
-    margin-bottom:7px;
+.note-wrap{
+  max-width:900px;
+  margin:auto;
 }
 
-.file-note{
-    font-size:12px;
-    color:#6b7280;
-    margin-top:6px;
+.notes{
+  width:100%;
+  min-height:420px;
+  resize:none;
+  outline:none;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+  font-size:15px;
+  line-height:1.7;
+  color:#222;
+  background:#fff;
+  box-shadow:0 3px 18px rgba(20,20,30,.035);
 }
 
-.form-actions{
-    display:flex;
-    justify-content:flex-end;
-    gap:10px;
-    margin-top:8px;
+.notes:focus{
+  border-color:#d8d3fa;
 }
 
-.preview-note{
-    text-align:center;
-    margin-bottom:18px;
-    color:#6b7280;
-    font-size:14px;
+.save-status{
+  font-size:12px;
+  color:#9999a2;
+  margin-top:9px;
+}
+
+/* ================= SAVED ================= */
+
+.saved-list{
+  max-width:900px;
+  margin:auto;
+}
+
+.saved-empty{
+  border:1px dashed #dddde4;
+  border-radius:15px;
+  padding:35px;
+  text-align:center;
+  color:#9999a2;
+}
+
+.saved-item{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.saved-info{
+  flex:1;
+  min-width:0;
+}
+
+.saved-name{
+  font-size:14px;
+  font-weight:650;
+}
+
+.saved-url{
+  color:#92929b;
+  font-size:12px;
+  margin-top:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.saved-open{
+  padding:8px 12px;
+  border-radius:9px;
+  background:#f3f2ff;
+  color:var(--accent);
+  font-size:12px;
+  font-weight:600;
+}
+
+.delete-btn{
+  width:32px;
+  height:32px;
+  border-radius:9px;
+  color:#aaa;
+}
+
+.delete-btn:hover{
+  background:#fff0f0;
+  color:var(--danger);
+}
+
+/* ================= SETTINGS ================= */
+
+.settings-card{
+  max-width:900px;
+  margin:auto;
+  border:1px solid var(--line);
+  border-radius:17px;
+  overflow:hidden;
+}
+
+.setting-row{
+  min-height:65px;
+  padding:15px 18px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.setting-row:last-child{
+  border-bottom:0;
+}
+
+.setting-name{
+  font-size:14px;
+  font-weight:600;
+}
+
+.setting-desc{
+  color:#92929b;
+  font-size:12px;
+  margin-top:4px;
+}
+
+.setting-button{
+  padding:9px 13px;
+  border:1px solid #e1e1e6;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:600;
+}
+
+.setting-button:hover{
+  background:#f7f7f9;
+}
+
+.setting-button.danger{
+  color:var(--danger);
+}
+
+/* ================= SEARCH ================= */
+
+.search-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(20,20,25,.14);
+  backdrop-filter:blur(3px);
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:92px;
+  z-index:200;
+}
+
+.search-overlay.show{
+  display:flex;
+}
+
+.search-box{
+  width:min(520px,calc(100% - 30px));
+  background:#fff;
+  border:1px solid #e8e8ed;
+  border-radius:17px;
+  box-shadow:0 18px 55px rgba(0,0,0,.13);
+  overflow:hidden;
+}
+
+.search-input-wrap{
+  height:62px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 18px;
+}
+
+.search-input-wrap svg{
+  width:20px;
+  color:#777;
+}
+
+.search-input{
+  flex:1;
+  border:0;
+  outline:0;
+  font-size:15px;
+  color:#222;
+}
+
+.search-input::placeholder{
+  color:#aaaab2;
+}
+
+.search-hint{
+  border-top:1px solid var(--line);
+  padding:11px 18px;
+  color:#9999a2;
+  font-size:11px;
+}
+
+/* ================= MODAL ================= */
+
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(20,20,25,.25);
+  backdrop-filter:blur(3px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:300;
+}
+
+.modal-bg.show{
+  display:flex;
 }
 
 .modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    z-index:999;
+  width:min(440px,100%);
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 25px 70px rgba(0,0,0,.18);
+  padding:22px;
 }
 
-.modal.show{
-    display:flex;
+.modal-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
 }
 
-.modal-box{
-    width:min(520px,100%);
-    max-height:90vh;
-    overflow:auto;
-    background:#fff;
-    border-radius:18px;
-    padding:26px;
-    position:relative;
+.modal-title{
+  font-size:18px;
+  font-weight:700;
 }
 
 .close{
-    position:absolute;
-    top:12px;
-    right:14px;
-    border:0;
-    background:#f3f4f6;
-    width:35px;
-    height:35px;
-    border-radius:50%;
-    cursor:pointer;
-    font-size:18px;
+  width:34px;
+  height:34px;
+  border-radius:9px;
+  color:#888;
 }
 
-.details-logo{
-    width:90px;
-    height:90px;
-    object-fit:contain;
-    border:1px solid #e5e7eb;
-    border-radius:12px;
-    margin-bottom:15px;
+.close:hover{
+  background:#f5f5f7;
 }
 
-.detail-row{
-    padding:11px 0;
-    border-bottom:1px solid #f0f0f0;
+.form-group{
+  margin-bottom:14px;
 }
 
-.detail-row strong{
-    display:block;
-    font-size:12px;
-    color:#6b7280;
-    margin-bottom:3px;
+.form-label{
+  display:block;
+  font-size:12px;
+  font-weight:600;
+  color:#55555e;
+  margin-bottom:7px;
 }
 
-.payment-box{
-    text-align:center;
+.form-input{
+  width:100%;
+  height:44px;
+  border:1px solid #e4e4e9;
+  border-radius:10px;
+  outline:none;
+  padding:0 12px;
+  font-size:13px;
 }
 
-.upi{
-    background:#f3f4f6;
-    border-radius:10px;
-    padding:14px;
-    margin:18px 0;
-    font-weight:800;
-    word-break:break-all;
+.form-input:focus{
+  border-color:#bdb5fa;
 }
 
-.payment-actions{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    justify-content:center;
+.form-actions{
+  display:flex;
+  gap:9px;
+  margin-top:20px;
 }
 
-.status{
+.btn{
+  flex:1;
+  height:44px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:650;
+}
+
+.btn-secondary{
+  border:1px solid #e2e2e7;
+}
+
+.btn-primary{
+  background:#17171b;
+  color:#fff;
+}
+
+.btn-primary:hover{
+  background:#000;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:650px){
+  .sidebar{
+    width:64px;
+    min-width:64px;
+    padding:10px 5px;
+  }
+
+  .logo-btn{
+    width:44px;
+    height:44px;
+  }
+
+  .app-item{
+    width:48px;
+    height:48px;
+  }
+
+  .tool{
+    width:48px;
+    height:46px;
+  }
+
+  .add-app{
+    width:44px;
+    height:44px;
+  }
+
+  .topbar{
+    height:58px;
+    min-height:58px;
+    padding:0 15px;
+  }
+
+  .panel{
+    padding:20px 14px;
+  }
+
+  .home-message{
+    padding:20px;
+  }
+
+  .notes{
+    min-height:calc(100vh - 150px);
+  }
+
+  .tooltip{
     display:none;
-    padding:13px;
-    border-radius:9px;
-    margin-bottom:18px;
-    font-weight:600;
-    font-size:14px;
-}
-
-.status.success{
-    display:block;
-    background:#ecfdf5;
-    color:#047857;
-}
-
-.status.error{
-    display:block;
-    background:#fef2f2;
-    color:#b91c1c;
-}
-
-@media(max-width:800px){
-    .stats,
-    .pricing{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .field.full{
-        grid-column:auto;
-    }
-
-    .nav a{
-        display:none;
-    }
-}
-
-@media(max-width:500px){
-    .stats,
-    .pricing{
-        grid-template-columns:1fr;
-    }
-
-    .hero{
-        padding-top:45px;
-    }
-
-    .hero h1{
-        letter-spacing:-1px;
-    }
-
-    section{
-        padding:45px 0;
-    }
-
-    .form-box{
-        padding:20px;
-    }
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <div class="container nav">
-        <div class="logo">
-            ONE MILLION <span>PIXELS</span>
-        </div>
+<div class="app">
 
-        <nav>
-            <a href="#wallSection">Wall</a>
-            <a href="#pricingSection">Pricing</a>
-            <a href="#registerSection">Register</a>
-            <a href="#previewSection">Preview</a>
-        </nav>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
 
-        <a href="#registerSection" class="btn btn-primary">
-            Book a Pixel
-        </a>
-    </div>
-</header>
+    <!-- LOOPIN LOGO -->
+    <button class="logo-btn" onclick="showHome()" title="LOOPIN">
+      <svg class="logo-svg" viewBox="0 0 50 50" fill="none">
+        <rect x="3" y="3" width="44" height="44" rx="14" fill="#17171B"/>
+        <path d="M13 25C13 17.8 18.5 13 25.2 13C31.8 13 37 17.7 37 24.9C37 32 31.8 37 25 37C18.4 37 13 32.1 13 25Z"
+              stroke="white" stroke-width="3.2"/>
+        <path d="M20 25C20 21.9 22.2 20 25.2 20C28.2 20 30 22 30 25C30 28 28.1 30 25 30C22.1 30 20 28 20 25Z"
+              stroke="#8B7CFF" stroke-width="2.6"/>
+        <circle cx="35.5" cy="14.5" r="3" fill="#8B7CFF"/>
+      </svg>
+    </button>
 
-<!-- HERO -->
-<section class="hero">
-    <div class="container">
+    <div class="apps" id="apps"></div>
 
-        <div class="badge">
-            ✦ 1,00,000 Pixel Business Wall
-        </div>
+    <button class="add-app" onclick="openAddApp()" title="Add App">+</button>
 
-        <h1>ONE MILLION<br>PIXELS HOMEPAGE</h1>
+    <div class="sidebar-spacer"></div>
 
-        <p>
-            Give your brand a permanent place on our digital business wall.
-            Book your pixel block and showcase your business to visitors.
-        </p>
+    <div class="bottom-tools">
 
-        <div class="stats">
-            <div class="stat">
-                <strong id="totalPixels">1,00,000</strong>
-                <span>Total Pixels</span>
-            </div>
+      <button class="tool" id="notesTool" onclick="openNotes()" title="Notes">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6 3.5h9l3 3V20.5H6A2 2 0 0 1 4 18.5v-13a2 2 0 0 1 2-2Z"
+                stroke="currentColor" stroke-width="1.7"/>
+          <path d="M14 3.5v4h4M8 11h6M8 14.5h6M8 18h4"
+                stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span class="tooltip">Notes</span>
+      </button>
 
-            <div class="stat">
-                <strong id="soldPixels">0</strong>
-                <span>Sold Pixels</span>
-            </div>
+      <button class="tool" id="savedTool" onclick="openSaved()" title="Saved URLs">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M7 5.5A2.5 2.5 0 0 1 9.5 3h9A2.5 2.5 0 0 1 21 5.5v9A2.5 2.5 0 0 1 18.5 17h-9A2.5 2.5 0 0 1 7 14.5v-9Z"
+                stroke="currentColor" stroke-width="1.7"/>
+          <path d="M4 8v10.5A2.5 2.5 0 0 0 6.5 21H17M10 8.5h6M10 12h6"
+                stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+        <span class="tooltip">Saved URLs</span>
+      </button>
 
-            <div class="stat">
-                <strong id="availablePixels">1,00,000</strong>
-                <span>Available Pixels</span>
-            </div>
-
-            <div class="stat">
-                <strong id="businessBlocks">0</strong>
-                <span>Business Blocks</span>
-            </div>
-        </div>
-
-    </div>
-</section>
-
-<!-- WALL -->
-<section id="wallSection">
-    <div class="container">
-
-        <div class="title">
-            <h2>Live Business Wall</h2>
-            <p>1 block = 100 pixels · 1,000 blocks available</p>
-        </div>
-
-        <div class="toolbar">
-            <input
-                id="searchInput"
-                type="text"
-                placeholder="Search company, sector or block..."
-                oninput="applyFilters()"
-            >
-
-            <select id="sectorFilter" onchange="applyFilters()">
-                <option value="">All Sectors</option>
-            </select>
-
-            <select id="zoneFilter" onchange="applyFilters()">
-                <option value="">All Spaces</option>
-                <option value="center">Center ₹599</option>
-                <option value="premium">Premium ₹699</option>
-                <option value="edge">Edge ₹799</option>
-                <option value="corner">Corner ₹999</option>
-            </select>
-        </div>
-
-        <div class="wall-box">
-            <div id="wall" class="wall"></div>
-        </div>
+      <button class="tool" id="settingsTool" onclick="openSettings()" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 0 0 12 8.5Z"
+                stroke="currentColor" stroke-width="1.7"/>
+          <path d="M19 13.3a7.3 7.3 0 0 0 0-2.6l2-1.5-2-3.4-2.4 1a8 8 0 0 0-2.2-1.3L14 3h-4l-.4 2.5a8 8 0 0 0-2.2 1.3L5 5.8 3 9.2l2 1.5a7.3 7.3 0 0 0 0 2.6l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 2.2 1.3L10 21h4l.4-2.5a8 8 0 0 0 2.2-1.3l2.4 1 2-3.4-2-1.5Z"
+                stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span class="tooltip">Settings</span>
+      </button>
 
     </div>
-</section>
+  </aside>
 
-<!-- PRICING -->
-<section id="pricingSection">
-    <div class="container">
+  <!-- MAIN -->
+  <main class="main">
 
-        <div class="title">
-            <h2>Pixel Pricing</h2>
-            <p>Choose the location that suits your business.</p>
-        </div>
+    <header class="topbar">
+      <div class="page-title" id="pageTitle">LOOPIN</div>
 
-        <div class="pricing">
-
-            <div class="price-card">
-                <h3>Center</h3>
-                <div class="price">₹599</div>
-                <p>Standard business block</p>
-            </div>
-
-            <div class="price-card">
-                <h3>Premium</h3>
-                <div class="price">₹699</div>
-                <p>High visibility location</p>
-            </div>
-
-            <div class="price-card">
-                <h3>Edge</h3>
-                <div class="price">₹799</div>
-                <p>Edge position</p>
-            </div>
-
-            <div class="price-card">
-                <h3>Corner</h3>
-                <div class="price">₹999</div>
-                <p>Premium corner position</p>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- REGISTRATION -->
-<section id="registerSection">
-    <div class="container">
-
-        <div class="title">
-            <h2>Register Your Business</h2>
-            <p>Submit your details. Our team will review them.</p>
-        </div>
-
-        <div class="form-box">
-
-            <div id="statusBox" class="status"></div>
-
-            <form id="businessForm">
-
-                <div class="form-grid">
-
-                    <div class="field">
-                        <label>Company / Brand Name *</label>
-                        <input id="companyName" required>
-                    </div>
-
-                    <div class="field">
-                        <label>Contact Person *</label>
-                        <input id="contactPerson" required>
-                    </div>
-
-                    <div class="field">
-                        <label>Mobile Number *</label>
-                        <input
-                            id="mobile"
-                            required
-                            maxlength="10"
-                            inputmode="numeric"
-                            placeholder="10 digit mobile"
-                        >
-                    </div>
-
-                    <div class="field">
-                        <label>Website</label>
-                        <input
-                            id="website"
-                            placeholder="www.example.com"
-                        >
-                    </div>
-
-                    <div class="field">
-                        <label>Business Sector *</label>
-                        <select id="sector" required>
-                            <option value="">Select Sector</option>
-                            <option>Banking</option>
-                            <option>IT</option>
-                            <option>Finance</option>
-                            <option>Education</option>
-                            <option>Healthcare</option>
-                            <option>Real Estate</option>
-                            <option>Retail</option>
-                            <option>Food & Restaurant</option>
-                            <option>Travel</option>
-                            <option>Manufacturing</option>
-                            <option>Services</option>
-                            <option>Other</option>
-                        </select>
-                    </div>
-
-                    <div class="field">
-                        <label>Block Number *</label>
-                        <input
-                            id="blockNumber"
-                            type="number"
-                            min="1"
-                            max="1000"
-                            required
-                            placeholder="1 - 1000"
-                            onchange="updatePrice()"
-                        >
-                    </div>
-
-                    <div class="field">
-                        <label>Selected Price</label>
-                        <input id="price" readonly value="₹599">
-                    </div>
-
-                    <div class="field full">
-                        <label>Description</label>
-                        <textarea
-                            id="description"
-                            rows="4"
-                            maxlength="500"
-                            placeholder="Tell visitors about your business..."
-                        ></textarea>
-                    </div>
-
-                    <div class="field full">
-                        <label>Business Logo *</label>
-                        <input
-                            id="logo"
-                            type="file"
-                            accept="image/*"
-                            required
-                        >
-                        <div class="file-note">
-                            JPG, PNG or WEBP recommended.
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form-actions">
-                    <button type="reset" class="btn">
-                        Clear
-                    </button>
-
-                    <button
-                        type="submit"
-                        class="btn btn-blue"
-                        id="submitBtn"
-                    >
-                        Submit Registration
-                    </button>
-                </div>
-
-            </form>
-        </div>
-    </div>
-</section>
-
-<!-- PREVIEW -->
-<section id="previewSection">
-    <div class="container">
-
-        <div class="title">
-            <h2>Preview</h2>
-            <p>
-                All 1,000 business blocks are shown below.
-                Approved businesses display their logo.
-            </p>
-        </div>
-
-        <div class="preview-note">
-            Click a booked logo/block to view business details.
-        </div>
-
-        <div class="wall-box">
-            <div id="previewWall" class="wall"></div>
-        </div>
-
-    </div>
-</section>
-
-<!-- PAYMENT MODAL -->
-<div id="paymentModal" class="modal">
-    <div class="modal-box">
-
-        <button class="close" onclick="closeModal('paymentModal')">
-            ×
+      <div class="top-actions">
+        <button class="search-btn" onclick="openSearch()" title="Search Google">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="10.8" cy="10.8" r="6.8"
+                    stroke="currentColor" stroke-width="1.8"/>
+            <path d="m16 16 5 5"
+                  stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round"/>
+          </svg>
         </button>
+      </div>
+    </header>
 
-        <div class="payment-box">
+    <section class="content" id="content">
 
-            <h2>Complete Payment</h2>
+      <!-- HOME -->
+      <div class="home" id="homePage">
+        <div class="home-message">
 
-            <p style="margin-top:10px;color:#6b7280;">
-                Your registration has been submitted.
-                Please complete the payment using the UPI ID below.
-            </p>
+          <svg class="home-mark" viewBox="0 0 50 50" fill="none">
+            <rect x="4" y="4" width="42" height="42" rx="13" fill="#17171B"/>
+            <path d="M14 25C14 18.5 19 14 25.2 14C31.3 14 36 18.5 36 25C36 31.5 31.2 36 25 36C19 36 14 31.5 14 25Z"
+                  stroke="white" stroke-width="3"/>
+            <circle cx="34" cy="15.5" r="3" fill="#8B7CFF"/>
+          </svg>
 
-            <div class="upi" id="upiText">
-                yourplaystory-1@oksbi
-            </div>
-
-            <p>
-                Amount:
-                <strong id="paymentAmount">₹599</strong>
-            </p>
-
-            <div class="payment-actions">
-
-                <button
-                    class="btn"
-                    onclick="copyUPI()"
-                >
-                    Copy UPI ID
-                </button>
-
-                <button
-                    class="btn btn-blue"
-                    onclick="makePayment()"
-                >
-                    Make Payment
-                </button>
-
-                <button
-                    class="btn btn-primary"
-                    onclick="paidMessage()"
-                >
-                    I Have Paid
-                </button>
-
-            </div>
+          <p>Select an app from the left to get started.</p>
 
         </div>
-    </div>
+      </div>
+
+      <!-- NOTES -->
+      <div class="panel" id="notesPage" style="display:none">
+
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Notes</div>
+            <div class="panel-subtitle">Your notes are saved automatically.</div>
+          </div>
+        </div>
+
+        <div class="note-wrap">
+          <textarea
+            id="notes"
+            class="notes"
+            placeholder="Start writing..."
+            oninput="saveNotes()"></textarea>
+
+          <div class="save-status" id="saveStatus">
+            Saved locally
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SAVED -->
+      <div class="panel" id="savedPage" style="display:none">
+
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Saved URLs</div>
+            <div class="panel-subtitle">Keep useful websites in one place.</div>
+          </div>
+        </div>
+
+        <div class="saved-list" id="savedList"></div>
+
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="panel" id="settingsPage" style="display:none">
+
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Settings</div>
+            <div class="panel-subtitle">Customize your LOOPIN workspace.</div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+
+          <div class="setting-row">
+            <div>
+              <div class="setting-name">Apps</div>
+              <div class="setting-desc">
+                Restore the default app arrangement.
+              </div>
+            </div>
+
+            <button class="setting-button" onclick="resetApps()">
+              Reset Apps
+            </button>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <div class="setting-name">Notes</div>
+              <div class="setting-desc">
+                Delete your locally stored notes.
+              </div>
+            </div>
+
+            <button class="setting-button danger" onclick="clearNotes()">
+              Clear Notes
+            </button>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <div class="setting-name">Saved URLs</div>
+              <div class="setting-desc">
+                Remove all saved website links.
+              </div>
+            </div>
+
+            <button class="setting-button danger" onclick="clearSaved()">
+              Clear URLs
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
 </div>
 
-<!-- DETAILS MODAL -->
-<div id="detailsModal" class="modal">
-    <div class="modal-box">
 
-        <button class="close" onclick="closeModal('detailsModal')">
-            ×
-        </button>
+<!-- SEARCH -->
+<div class="search-overlay" id="searchOverlay" onclick="closeSearchOutside(event)">
 
-        <div id="detailsContent"></div>
+  <div class="search-box">
+
+    <div class="search-input-wrap">
+
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="10.8" cy="10.8" r="6.8"
+                stroke="currentColor" stroke-width="1.8"/>
+        <path d="m16 16 5 5"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"/>
+      </svg>
+
+      <input
+        id="searchInput"
+        class="search-input"
+        placeholder="Search Google..."
+        autocomplete="off"
+        onkeydown="handleSearch(event)"
+      >
 
     </div>
+
+    <div class="search-hint">
+      Type your search and press Enter · Esc to close
+    </div>
+
+  </div>
+
 </div>
+
+
+<!-- ADD APP MODAL -->
+<div class="modal-bg" id="addModal">
+
+  <div class="modal">
+
+    <div class="modal-head">
+      <div class="modal-title">Add App</div>
+
+      <button class="close" onclick="closeAddApp()">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">App name</label>
+      <input
+        id="appName"
+        class="form-input"
+        placeholder="Example: Notion"
+      >
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Website URL</label>
+      <input
+        id="appUrl"
+        class="form-input"
+        placeholder="https://example.com"
+      >
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Icon letter</label>
+      <input
+        id="appLetter"
+        class="form-input"
+        maxlength="2"
+        placeholder="N"
+      >
+    </div>
+
+    <div class="form-actions">
+
+      <button class="btn btn-secondary" onclick="closeAddApp()">
+        Cancel
+      </button>
+
+      <button class="btn btn-primary" onclick="addApp()">
+        Add App
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
 
 <script>
+
 /* =========================================================
-   SUPABASE
+   DEFAULT APPS
 ========================================================= */
 
-const SUPABASE_URL =
-    "https://eaowxilhfzyukzetgqxo.supabase.co";
+const defaultApps = [
 
-const SUPABASE_KEY =
-    "sb_publishable_Z3xsADypaOjX8GEQEOLUdg_vbxynHRx";
+  {
+    id:"whatsapp",
+    name:"WhatsApp",
+    url:"https://web.whatsapp.com/",
+    type:"whatsapp"
+  },
 
-const API_URL =
-    SUPABASE_URL + "/rest/v1/businesses";
+  {
+    id:"instagram",
+    name:"Instagram",
+    url:"https://www.instagram.com/",
+    type:"instagram"
+  },
 
-const STORAGE_URL =
-    SUPABASE_URL +
-    "/storage/v1/object/business-logos";
+  {
+    id:"gmail",
+    name:"Gmail",
+    url:"https://mail.google.com/",
+    type:"gmail"
+  },
 
-const UPI_ID =
-    "yourplaystory-1@oksbi";
+  {
+    id:"outlook",
+    name:"Outlook",
+    url:"https://outlook.live.com/",
+    type:"outlook"
+  },
 
-const TOTAL_BLOCKS = 1000;
-const PIXELS_PER_BLOCK = 100;
-const TOTAL_PIXELS = 100000;
+  {
+    id:"linkedin",
+    name:"LinkedIn",
+    url:"https://www.linkedin.com/",
+    type:"linkedin"
+  },
 
-const PRICES = {
-    center: 599,
-    premium: 699,
-    edge: 799,
-    corner: 999
-};
+  {
+    id:"copilot",
+    name:"Copilot",
+    url:"https://copilot.microsoft.com/",
+    type:"copilot"
+  },
 
-let businesses = [];
-let currentPaymentAmount = 599;
+  {
+    id:"chatgpt",
+    name:"ChatGPT",
+    url:"https://chatgpt.com/",
+    type:"chatgpt"
+  }
+
+];
+
+
+/* =========================================================
+   ICONS
+========================================================= */
+
+function icon(type){
+
+  if(type==="whatsapp"){
+    return `
+      <svg viewBox="0 0 32 32">
+        <circle cx="16" cy="16" r="15" fill="#25D366"/>
+        <path d="M22.4 9.8A9 9 0 0 0 7 16.2c0 1.6.4 3.1 1.2 4.4L7 25l4.5-1.2a9 9 0 0 0 4.2 1c5 0 9-4 9-9 0-2.3-.9-4.4-2.3-6Z"
+              fill="white"/>
+        <path d="M12.1 11.8c.3-.3.6-.3.9-.1l1.3 1c.3.2.4.5.2.8l-.6.8c.8 1.5 2 2.5 3.5 3.2l.7-.7c.2-.2.6-.3.9-.1l1.4.8c.3.2.4.5.3.8-.4 1.2-1.4 1.8-2.5 1.5-3.2-.8-5.9-3-7.4-6-.5-.9-.2-1.7.3-2Z"
+              fill="#25D366"/>
+      </svg>
+    `;
+  }
+
+  if(type==="instagram"){
+    return `
+      <svg viewBox="0 0 32 32">
+        <defs>
+          <linearGradient id="ig" x1="0" y1="1" x2="1" y2="0">
+            <stop stop-color="#FEDA75"/>
+            <stop offset=".35" stop-color="#FA7E1E"/>
+            <stop offset=".7" stop-color="#D62976"/>
+            <stop offset="1" stop-color="#4F5BD5"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="28" height="28" rx="8" fill="url(#ig)"/>
+        <rect x="8" y="8" width="16" height="16" rx="5"
+              fill="none" stroke="white" stroke-width="2"/>
+        <circle cx="16" cy="16" r="4"
+                fill="none" stroke="white" stroke-width="2"/>
+        <circle cx="22" cy="10" r="1.4" fill="white"/>
+      </svg>
+    `;
+  }
+
+  if(type==="gmail"){
+    return `
+      <svg viewBox="0 0 32 32">
+        <rect x="3" y="5" width="26" height="22" rx="5" fill="#fff"/>
+        <path d="M5 8l11 8L27 8v14H5V8Z"
+              fill="none" stroke="#EA4335" stroke-width="2.5"/>
+        <path d="M5 9l11 8 11-8"
+              fill="none" stroke="#4285F4" stroke-width="2.5"/>
+      </svg>
+    `;
+  }
+
+  if(type==="outlook"){
+    return `
+      <svg viewBox="0 0 32 32">
+        <rect x="3" y="7" width="19" height="18" rx="3" fill="#0A64D8"/>
+        <path d="M16 9h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H16V9Z"
+              fill="#1674E8"/>
+        <path d="M18 12l6 4 5-4"
+              fill="none" stroke="white" stroke-width="1.5"/>
+        <text x="7" y="20" fill="white"
+              font-size="10" font-weight="700">O</text>
+      </svg>
+    `;
+  }
+
+  if(type==="linkedin"){
+    return `
+      <svg viewBox="0 0 32 32">
+        <rect x="2" y="2" width="28" height="28" rx="5" fill="#0A66C2"/>
+        <circle cx="9" cy="10" r="2" fill="white"/>
+        <path d="M7.5 14v10M13 24V14m0 4c.5-3 7-4 7 1v5"
+              stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
+  if(type==="copilot"){
+    return `
+      <svg viewBox="0 0 32 32">
+        <defs>
+          <linearGradient id="cp" x1="0" y1="0" x2="1" y2="1">
+            <stop stop-color="#6D5DFB"/>
+            <stop offset="1" stop-color="#25C6DA"/>
+          </linearGradient>
+        </defs>
+        <rect x="2" y="2" width="28" height="28" rx="9" fill="url(#cp)"/>
+        <path d="M9 18c1-5 4-7 7-4l2 2c2 2 4 1 5-2"
+              fill="none" stroke="white" stroke-width="2.2"
+              stroke-linecap="round"/>
+        <path d="M9 21c2 2 4 2 6 0l2-2c2-2 4-1 6 1"
+              fill="none" stroke="white" stroke-width="2.2"
+              stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
+  if(type==="chatgpt"){
+    return `
+      <svg viewBox="0 0 32 32">
+        <rect x="2" y="2" width="28" height="28" rx="9" fill="#111"/>
+        <path d="M16 8a5 5 0 0 1 4.8 6.2A5 5 0 0 1 23 23a5 5 0 0 1-7 1.8A5 5 0 0 1 8.2 20a5 5 0 0 1 1-7.2A5 5 0 0 1 16 8Z"
+              fill="none" stroke="white" stroke-width="1.5"/>
+        <path d="M12 11l8 4m-9 6 9-6m-4 9V15m-7 2 8 4"
+              stroke="white" stroke-width="1.2"
+              stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
+  return "";
+}
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+const APP_KEY = "loopin_apps_v3";
+const NOTES_KEY = "loopin_notes_v3";
+const SAVED_KEY = "loopin_saved_v3";
+
+
+let apps = loadApps();
+
+
+function loadApps(){
+
+  try{
+
+    const saved = localStorage.getItem(APP_KEY);
+
+    if(saved){
+      return JSON.parse(saved);
+    }
+
+  }catch(e){}
+
+  return JSON.parse(JSON.stringify(defaultApps));
+}
+
+
+function saveApps(){
+
+  localStorage.setItem(APP_KEY,JSON.stringify(apps));
+
+}
+
+
+/* =========================================================
+   RENDER APPS
+========================================================= */
+
+function renderApps(){
+
+  const container = document.getElementById("apps");
+
+  container.innerHTML = "";
+
+  apps.forEach((app,index)=>{
+
+    const item = document.createElement("div");
+
+    item.className = "app-item";
+
+    item.draggable = true;
+
+    item.dataset.index = index;
+
+    item.title = app.name;
+
+    let visual = "";
+
+    if(app.type){
+
+      visual = `
+        <div class="app-icon">
+          ${icon(app.type)}
+        </div>
+      `;
+
+    }else{
+
+      visual = `
+        <div
+          class="app-letter"
+          style="background:${app.color || "#6c5ce7"}">
+          ${(app.letter || app.name.charAt(0)).toUpperCase()}
+        </div>
+      `;
+
+    }
+
+    item.innerHTML = `
+      ${visual}
+      <span class="tooltip">${escapeHTML(app.name)}</span>
+    `;
+
+
+    item.addEventListener("click",()=>{
+
+      openApp(app);
+
+    });
+
+
+    /* DRAG */
+
+    item.addEventListener("dragstart",e=>{
+
+      e.dataTransfer.setData("text/plain",index);
+
+      item.style.opacity=".45";
+
+    });
+
+
+    item.addEventListener("dragend",()=>{
+
+      item.style.opacity="1";
+
+    });
+
+
+    item.addEventListener("dragover",e=>{
+
+      e.preventDefault();
+
+    });
+
+
+    item.addEventListener("drop",e=>{
+
+      e.preventDefault();
+
+      const from = Number(
+        e.dataTransfer.getData("text/plain")
+      );
+
+      const to = Number(item.dataset.index);
+
+      if(from===to) return;
+
+      const moved = apps.splice(from,1)[0];
+
+      apps.splice(to,0,moved);
+
+      saveApps();
+
+      renderApps();
+
+    });
+
+
+    container.appendChild(item);
+
+  });
+
+}
+
+
+renderApps();
+
+
+/* =========================================================
+   APP OPEN
+========================================================= */
+
+function openApp(app){
+
+  document.querySelectorAll(".app-item")
+    .forEach(x=>x.classList.remove("active"));
+
+  hideAllPages();
+
+  document.getElementById("pageTitle").textContent = app.name;
+
+  /*
+    Direct navigation.
+    User's existing browser login session is used
+    whenever the service supports it.
+  */
+
+  window.location.assign(app.url);
+
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+function showHome(){
+
+  hideAllPages();
+
+  document.getElementById("homePage").style.display="flex";
+
+  document.getElementById("pageTitle").textContent="LOOPIN";
+
+  clearTools();
+
+}
+
+
+function hideAllPages(){
+
+  document.getElementById("homePage").style.display="none";
+  document.getElementById("notesPage").style.display="none";
+  document.getElementById("savedPage").style.display="none";
+  document.getElementById("settingsPage").style.display="none";
+
+}
+
+
+function clearTools(){
+
+  document.querySelectorAll(".tool")
+    .forEach(x=>x.classList.remove("active"));
+
+}
+
+
+/* =========================================================
+   NOTES
+========================================================= */
+
+function openNotes(){
+
+  hideAllPages();
+
+  document.getElementById("notesPage").style.display="block";
+
+  document.getElementById("pageTitle").textContent="Notes";
+
+  clearTools();
+
+  document.getElementById("notesTool")
+    .classList.add("active");
+
+  document.getElementById("notes").value =
+    localStorage.getItem(NOTES_KEY) || "";
+
+}
+
+
+function saveNotes(){
+
+  const value = document.getElementById("notes").value;
+
+  localStorage.setItem(NOTES_KEY,value);
+
+  document.getElementById("saveStatus").textContent =
+    "Saved locally · " +
+    new Date().toLocaleTimeString([],{
+      hour:"2-digit",
+      minute:"2-digit"
+    });
+
+}
+
+
+function clearNotes(){
+
+  if(!confirm("Clear all notes?")) return;
+
+  localStorage.removeItem(NOTES_KEY);
+
+  document.getElementById("notes").value="";
+
+  document.getElementById("saveStatus").textContent =
+    "Notes cleared";
+
+}
+
+
+/* =========================================================
+   SAVED URLS
+========================================================= */
+
+function openSaved(){
+
+  hideAllPages();
+
+  document.getElementById("savedPage").style.display="block";
+
+  document.getElementById("pageTitle").textContent="Saved URLs";
+
+  clearTools();
+
+  document.getElementById("savedTool")
+    .classList.add("active");
+
+  renderSaved();
+
+}
+
+
+function getSaved(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(SAVED_KEY) || "[]"
+    );
+
+  }catch(e){
+
+    return [];
+
+  }
+
+}
+
+
+function renderSaved(){
+
+  const list = document.getElementById("savedList");
+
+  const saved = getSaved();
+
+  if(!saved.length){
+
+    list.innerHTML = `
+      <div class="saved-empty">
+        No saved URLs yet.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  list.innerHTML="";
+
+  saved.forEach((item,index)=>{
+
+    const row = document.createElement("div");
+
+    row.className="saved-item";
+
+    row.innerHTML=`
+
+      <div class="saved-info">
+
+        <div class="saved-name">
+          ${escapeHTML(item.name)}
+        </div>
+
+        <div class="saved-url">
+          ${escapeHTML(item.url)}
+        </div>
+
+      </div>
+
+      <button
+        class="saved-open"
+        onclick="window.location.assign('${safeJS(item.url)}')">
+        Open
+      </button>
+
+      <button
+        class="delete-btn"
+        onclick="deleteSaved(${index})">
+        ✕
+      </button>
+
+    `;
+
+    list.appendChild(row);
+
+  });
+
+}
+
+
+function saveCurrentURL(){
+
+  const url = prompt(
+    "Enter website URL:",
+    "https://"
+  );
+
+  if(!url) return;
+
+  let finalURL=url.trim();
+
+  if(!/^https?:\/\//i.test(finalURL)){
+
+    finalURL="https://"+finalURL;
+
+  }
+
+  let name=prompt(
+    "Enter name:",
+    new URL(finalURL).hostname
+  );
+
+  if(!name) name=new URL(finalURL).hostname;
+
+  const saved=getSaved();
+
+  saved.push({
+    name,
+    url:finalURL
+  });
+
+  localStorage.setItem(
+    SAVED_KEY,
+    JSON.stringify(saved)
+  );
+
+  openSaved();
+
+}
+
+
+function deleteSaved(index){
+
+  const saved=getSaved();
+
+  saved.splice(index,1);
+
+  localStorage.setItem(
+    SAVED_KEY,
+    JSON.stringify(saved)
+  );
+
+  renderSaved();
+
+}
+
+
+function clearSaved(){
+
+  if(!confirm("Delete all saved URLs?")) return;
+
+  localStorage.removeItem(SAVED_KEY);
+
+  renderSaved();
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function openSettings(){
+
+  hideAllPages();
+
+  document.getElementById("settingsPage").style.display="block";
+
+  document.getElementById("pageTitle").textContent="Settings";
+
+  clearTools();
+
+  document.getElementById("settingsTool")
+    .classList.add("active");
+
+}
+
+
+function resetApps(){
+
+  if(!confirm("Restore default apps and order?")) return;
+
+  apps=JSON.parse(
+    JSON.stringify(defaultApps)
+  );
+
+  saveApps();
+
+  renderApps();
+
+}
+
+
+ /* =========================================================
+    ADD APP
+ ========================================================= */
+
+function openAddApp(){
+
+  document.getElementById("addModal")
+    .classList.add("show");
+
+  setTimeout(()=>{
+
+    document.getElementById("appName").focus();
+
+  },100);
+
+}
+
+
+function closeAddApp(){
+
+  document.getElementById("addModal")
+    .classList.remove("show");
+
+  document.getElementById("appName").value="";
+  document.getElementById("appUrl").value="";
+  document.getElementById("appLetter").value="";
+
+}
+
+
+function addApp(){
+
+  const name=
+    document.getElementById("appName")
+    .value.trim();
+
+  let url=
+    document.getElementById("appUrl")
+    .value.trim();
+
+  const letter=
+    document.getElementById("appLetter")
+    .value.trim()
+    .slice(0,2);
+
+  if(!name){
+
+    alert("Please enter app name.");
+
+    return;
+
+  }
+
+  if(!url){
+
+    alert("Please enter website URL.");
+
+    return;
+
+  }
+
+  if(!/^https?:\/\//i.test(url)){
+
+    url="https://"+url;
+
+  }
+
+  try{
+
+    new URL(url);
+
+  }catch(e){
+
+    alert("Please enter a valid URL.");
+
+    return;
+
+  }
+
+
+  apps.push({
+
+    id:"custom_"+Date.now(),
+
+    name:name,
+
+    url:url,
+
+    letter:letter || name.charAt(0),
+
+    color:"#6c5ce7"
+
+  });
+
+
+  saveApps();
+
+  renderApps();
+
+  closeAddApp();
+
+}
+
+
+/* =========================================================
+   GOOGLE SEARCH
+========================================================= */
+
+function openSearch(){
+
+  document.getElementById("searchOverlay")
+    .classList.add("show");
+
+  const input=
+    document.getElementById("searchInput");
+
+  input.value="";
+
+  setTimeout(()=>input.focus(),80);
+
+}
+
+
+function closeSearch(){
+
+  document.getElementById("searchOverlay")
+    .classList.remove("show");
+
+}
+
+
+function closeSearchOutside(e){
+
+  if(e.target.id==="searchOverlay"){
+
+    closeSearch();
+
+  }
+
+}
+
+
+function handleSearch(e){
+
+  if(e.key==="Escape"){
+
+    closeSearch();
+
+    return;
+
+  }
+
+  if(e.key==="Enter"){
+
+    const q=
+      document.getElementById("searchInput")
+      .value.trim();
+
+    if(!q) return;
+
+    window.location.assign(
+      "https://www.google.com/search?q="+
+      encodeURIComponent(q)
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   KEYBOARD SHORTCUT
+========================================================= */
+
+document.addEventListener("keydown",e=>{
+
+  if(
+    (e.ctrlKey || e.metaKey) &&
+    e.key.toLowerCase()==="k"
+  ){
+
+    e.preventDefault();
+
+    openSearch();
+
+  }
+
+  if(e.key==="Escape"){
+
+    closeSearch();
+
+  }
+
+});
+
+
+/* =========================================================
+   MODAL OUTSIDE CLICK
+========================================================= */
+
+document.getElementById("addModal")
+  .addEventListener("click",e=>{
+
+    if(e.target.id==="addModal"){
+
+      closeAddApp();
+
+    }
+
+  });
 
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-function headers(extra = {}) {
-    return {
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY,
-        "Content-Type": "application/json",
-        ...extra
-    };
+function escapeHTML(str){
+
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
 }
 
-function escapeHtml(value) {
-    return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-}
 
-function escapeAttr(value) {
-    return escapeHtml(value);
-}
+function safeJS(str){
 
-function getZone(block) {
+  return String(str)
+    .replaceAll("\\","\\\\")
+    .replaceAll("'","\\'");
 
-    const row = Math.ceil(block / 20);
-    const col = ((block - 1) % 20) + 1;
-
-    const lastRow = 50;
-
-    if (
-        (row === 1 || row === lastRow) &&
-        (col === 1 || col === 20)
-    ) {
-        return "corner";
-    }
-
-    if (
-        row === 1 ||
-        row === lastRow ||
-        col === 1 ||
-        col === 20
-    ) {
-        return "edge";
-    }
-
-    if (
-        row >= 2 &&
-        row <= 10 &&
-        col >= 2 &&
-        col <= 19
-    ) {
-        return "premium";
-    }
-
-    return "center";
-}
-
-function getPrice(block) {
-    return PRICES[getZone(block)];
 }
 
 
 /* =========================================================
-   PRICE
+   OPTIONAL: SAVE URL QUICK ACTION
 ========================================================= */
 
-function updatePrice() {
+/*
+   Double-click the LOOPIN logo to save a URL quickly.
+*/
 
-    const block =
-        Number(document.getElementById("blockNumber").value);
+document.querySelector(".logo-btn")
+  .addEventListener("dblclick",saveCurrentURL);
 
-    if (!block || block < 1 || block > 1000) {
-        document.getElementById("price").value = "₹599";
-        return;
-    }
 
-    const price = getPrice(block);
-
-    document.getElementById("price").value =
-        "₹" + price;
-}
-
-
-/* =========================================================
-   LOAD BUSINESSES
-========================================================= */
-
-async function loadBusinesses() {
-
-    try {
-
-        const response = await fetch(
-            API_URL +
-            "?approval_status=eq.approved&order=block_number.asc",
-            {
-                method:"GET",
-                headers:headers()
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error("Unable to load businesses");
-        }
-
-        businesses = await response.json();
-
-        renderWall();
-        showPreviewWall();
-        updateStats();
-        populateSectorFilter();
-
-    } catch(error) {
-
-        console.error(error);
-
-        businesses = [];
-
-        renderWall();
-        showPreviewWall();
-        updateStats();
-    }
-}
-
-
-/* =========================================================
-   STATS
-========================================================= */
-
-function updateStats() {
-
-    const count = businesses.length;
-
-    const soldPixels =
-        count * PIXELS_PER_BLOCK;
-
-    const available =
-        TOTAL_PIXELS - soldPixels;
-
-    document.getElementById("soldPixels")
-        .textContent =
-        soldPixels.toLocaleString("en-IN");
-
-    document.getElementById("availablePixels")
-        .textContent =
-        Math.max(0,available).toLocaleString("en-IN");
-
-    document.getElementById("businessBlocks")
-        .textContent = count.toLocaleString("en-IN");
-}
-
-
-/* =========================================================
-   SECTOR FILTER
-========================================================= */
-
-function populateSectorFilter() {
-
-    const select =
-        document.getElementById("sectorFilter");
-
-    const sectors =
-        [...new Set(
-            businesses
-                .map(b => b.sector)
-                .filter(Boolean)
-        )]
-        .sort();
-
-    select.innerHTML =
-        `<option value="">All Sectors</option>`;
-
-    sectors.forEach(sector => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = sector;
-        option.textContent = sector;
-
-        select.appendChild(option);
-    });
-}
-
-
-/* =========================================================
-   FILTER
-========================================================= */
-
-function getFilteredBusinesses() {
-
-    const search =
-        document.getElementById("searchInput")
-        .value
-        .trim()
-        .toLowerCase();
-
-    const sector =
-        document.getElementById("sectorFilter").value;
-
-    const zone =
-        document.getElementById("zoneFilter").value;
-
-    return businesses.filter(b => {
-
-        const block =
-            Number(b.block_number);
-
-        const matchesSearch =
-            !search ||
-            String(b.company_name || "")
-                .toLowerCase()
-                .includes(search) ||
-            String(b.sector || "")
-                .toLowerCase()
-                .includes(search) ||
-            String(block).includes(search);
-
-        const matchesSector =
-            !sector ||
-            b.sector === sector;
-
-        const matchesZone =
-            !zone ||
-            getZone(block) === zone;
-
-        return matchesSearch &&
-               matchesSector &&
-               matchesZone;
-    });
-}
-
-function applyFilters() {
-    renderWall();
-    showPreviewWall();
-}
-
-
-/* =========================================================
-   WALL
-========================================================= */
-
-function renderWall() {
-
-    const wall =
-        document.getElementById("wall");
-
-    if (!wall) return;
-
-    wall.innerHTML = "";
-
-    const filtered =
-        getFilteredBusinesses();
-
-    const businessMap = new Map();
-
-    filtered.forEach(b => {
-
-        if (b.block_number) {
-            businessMap.set(
-                Number(b.block_number),
-                b
-            );
-        }
-    });
-
-    for (let i = 1; i <= TOTAL_BLOCKS; i++) {
-
-        const business =
-            businessMap.get(i);
-
-        const pixel =
-            createPixel(i,business);
-
-        wall.appendChild(pixel);
-    }
-}
-
-
-/* =========================================================
-   PREVIEW
-========================================================= */
-
-function showPreviewWall() {
-
-    const wall =
-        document.getElementById("previewWall");
-
-    if (!wall) return;
-
-    wall.innerHTML = "";
-
-    const filtered =
-        getFilteredBusinesses();
-
-    const businessMap = new Map();
-
-    filtered.forEach(b => {
-
-        if (b.block_number) {
-
-            businessMap.set(
-                Number(b.block_number),
-                b
-            );
-        }
-    });
-
-    for (
-        let i = 1;
-        i <= TOTAL_BLOCKS;
-        i++
-    ) {
-
-        const business =
-            businessMap.get(i);
-
-        const pixel =
-            createPixel(i,business);
-
-        wall.appendChild(pixel);
-    }
-}
-
-
-/* =========================================================
-   CREATE PIXEL
-========================================================= */
-
-function createPixel(blockNumber,business) {
-
-    const pixel =
-        document.createElement("div");
-
-    pixel.className =
-        "pixel" +
-        (business ? " sold" : "");
-
-    pixel.dataset.block =
-        blockNumber;
-
-    if (!business) {
-
-        pixel.title =
-            `Block #${blockNumber} Available`;
-
-        pixel.innerHTML = `
-            <div class="pixel-no">
-                ${blockNumber}
-            </div>
-        `;
-
-        pixel.onclick = function() {
-
-            document.getElementById("blockNumber")
-                .value = blockNumber;
-
-            updatePrice();
-
-            document.getElementById("registerSection")
-                .scrollIntoView({
-                    behavior:"smooth"
-                });
-        };
-
-    } else {
-
-        pixel.title =
-            "Click to view details";
-
-        if (business.logo_url) {
-
-            pixel.innerHTML = `
-                <img
-                    src="${escapeAttr(business.logo_url)}"
-                    alt="${escapeAttr(business.company_name)}"
-                >
-
-                <div class="sold-label">
-                    SOLD
-                </div>
-
-                <div class="pixel-no">
-                    ${blockNumber}
-                </div>
-            `;
-
-        } else {
-
-            pixel.innerHTML = `
-                <div style="
-                    width:100%;
-                    height:100%;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    text-align:center;
-                    padding:3px;
-                    font-size:9px;
-                    font-weight:700;
-                ">
-                    ${escapeHtml(
-                        business.company_name
-                    )}
-                </div>
-
-                <div class="sold-label">
-                    SOLD
-                </div>
-
-                <div class="pixel-no">
-                    ${blockNumber}
-                </div>
-            `;
-        }
-
-        pixel.onclick = function() {
-            openDetails(business);
-        };
-    }
-
-    return pixel;
-}
-
-
-/* =========================================================
-   DETAILS
-========================================================= */
-
-function openDetails(business) {
-
-    const content =
-        document.getElementById("detailsContent");
-
-    const logo =
-        business.logo_url
-        ? `
-            <img
-                class="details-logo"
-                src="${escapeAttr(business.logo_url)}"
-                alt="${escapeAttr(business.company_name)}"
-            >
-          `
-        : "";
-
-    content.innerHTML = `
-
-        <div style="text-align:center;margin-bottom:18px;">
-            ${logo}
-
-            <h2>
-                ${escapeHtml(
-                    business.company_name
-                )}
-            </h2>
-
-            <p style="
-                color:#16a34a;
-                font-weight:700;
-                margin-top:5px;
-            ">
-                ✓ Permanently Booked
-            </p>
-        </div>
-
-        <div class="detail-row">
-            <strong>Block Number</strong>
-            #${escapeHtml(business.block_number)}
-        </div>
-
-        <div class="detail-row">
-            <strong>Pixels</strong>
-            ${PIXELS_PER_BLOCK} Pixels
-        </div>
-
-        <div class="detail-row">
-            <strong>Business Sector</strong>
-            ${escapeHtml(business.sector)}
-        </div>
-
-        <div class="detail-row">
-            <strong>Contact Person</strong>
-            ${escapeHtml(business.contact_person)}
-        </div>
-
-        <div class="detail-row">
-            <strong>Website</strong>
-            ${escapeHtml(business.website || "Not provided")}
-        </div>
-
-        <div class="detail-row">
-            <strong>Description</strong>
-            ${escapeHtml(
-                business.description ||
-                "No description provided."
-            )}
-        </div>
-
-    `;
-
-    document
-        .getElementById("detailsModal")
-        .classList.add("show");
-}
-
-
-/* =========================================================
-   MODALS
-========================================================= */
-
-function closeModal(id) {
-
-    document
-        .getElementById(id)
-        .classList.remove("show");
-}
-
-window.addEventListener("click",function(e){
-
-    if(e.target.classList.contains("modal")) {
-        e.target.classList.remove("show");
-    }
-
-});
-
-
-/* =========================================================
-   LOGO UPLOAD
-========================================================= */
-
-async function uploadLogo(file) {
-
-    const extension =
-        file.name
-            .split(".")
-            .pop()
-            .toLowerCase();
-
-    const fileName =
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .substring(2,10) +
-        "." +
-        extension;
-
-    const uploadResponse =
-        await fetch(
-            STORAGE_URL +
-            "/" +
-            encodeURIComponent(fileName),
-            {
-                method:"POST",
-                headers:{
-                    "apikey":SUPABASE_KEY,
-                    "Authorization":
-                        "Bearer " + SUPABASE_KEY,
-                    "Content-Type":
-                        file.type || "application/octet-stream"
-                },
-                body:file
-            }
-        );
-
-    if (!uploadResponse.ok) {
-
-        const text =
-            await uploadResponse.text();
-
-        throw new Error(
-            "Logo upload failed: " + text
-        );
-    }
-
-    return (
-        SUPABASE_URL +
-        "/storage/v1/object/public/business-logos/" +
-        encodeURIComponent(fileName)
-    );
-}
-
-
-/* =========================================================
-   REGISTRATION
-========================================================= */
-
-document
-.getElementById("businessForm")
-.addEventListener("submit",async function(e){
-
-    e.preventDefault();
-
-    const status =
-        document.getElementById("statusBox");
-
-    status.className = "status";
-    status.textContent = "";
-
-    const submitBtn =
-        document.getElementById("submitBtn");
-
-    const companyName =
-        document.getElementById("companyName")
-        .value.trim();
-
-    const contactPerson =
-        document.getElementById("contactPerson")
-        .value.trim();
-
-    const mobile =
-        document.getElementById("mobile")
-        .value.trim();
-
-    const website =
-        document.getElementById("website")
-        .value.trim();
-
-    const sector =
-        document.getElementById("sector")
-        .value;
-
-    const blockNumber =
-        Number(
-            document.getElementById("blockNumber")
-            .value
-        );
-
-    const description =
-        document.getElementById("description")
-        .value.trim();
-
-    const logoFile =
-        document.getElementById("logo")
-        .files[0];
-
-    if (!/^[6-9]\d{9}$/.test(mobile)) {
-
-        status.className =
-            "status error";
-
-        status.textContent =
-            "Please enter a valid 10-digit Indian mobile number.";
-
-        return;
-    }
-
-    if (
-        !blockNumber ||
-        blockNumber < 1 ||
-        blockNumber > 1000
-    ) {
-
-        status.className =
-            "status error";
-
-        status.textContent =
-            "Please select a block between 1 and 1000.";
-
-        return;
-    }
-
-    if (!logoFile) {
-
-        status.className =
-            "status error";
-
-        status.textContent =
-            "Please select your business logo.";
-
-        return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting...";
-
-    try {
-
-        const price =
-            getPrice(blockNumber);
-
-        /*
-         * Upload logo first
-         */
-        const logoUrl =
-            await uploadLogo(logoFile);
-
-        /*
-         * IMPORTANT:
-         * Public registration must use
-         * available + pending + pending
-         */
-        const payload = {
-
-            company_name:companyName,
-
-            contact_person:contactPerson,
-
-            mobile:mobile,
-
-            website:website,
-
-            sector:sector,
-
-            description:description,
-
-            logo_url:logoUrl,
-
-            block_number:blockNumber,
-
-            pixel_count:PIXELS_PER_BLOCK,
-
-            price:price,
-
-            booking_status:"available",
-
-            approval_status:"pending",
-
-            payment_status:"pending"
-        };
-
-        const response =
-            await fetch(API_URL,{
-                method:"POST",
-                headers:headers({
-                    "Prefer":"return=representation"
-                }),
-                body:JSON.stringify(payload)
-            });
-
-        if (!response.ok) {
-
-            const errorText =
-                await response.text();
-
-            throw new Error(errorText);
-        }
-
-        currentPaymentAmount = price;
-
-        document.getElementById("paymentAmount")
-            .textContent =
-            "₹" + price;
-
-        status.className =
-            "status success";
-
-        status.textContent =
-            "Registration submitted successfully! Our team will review your details and contact you for payment confirmation.";
-
-        document.getElementById("paymentModal")
-            .classList.add("show");
-
-        document.getElementById("businessForm")
-            .reset();
-
-        document.getElementById("price")
-            .value = "₹599";
-
-    } catch(error) {
-
-        console.error(error);
-
-        status.className =
-            "status error";
-
-        status.textContent =
-            "Registration failed. Please try again.";
-
-    } finally {
-
-        submitBtn.disabled = false;
-
-        submitBtn.textContent =
-            "Submit Registration";
-    }
-
-});
-
-
-/* =========================================================
-   PAYMENT
-========================================================= */
-
-function copyUPI() {
-
-    navigator.clipboard
-        .writeText(UPI_ID)
-        .then(() => {
-
-            alert(
-                "UPI ID copied: " +
-                UPI_ID
-            );
-
-        })
-        .catch(() => {
-
-            alert(
-                "UPI ID: " +
-                UPI_ID
-            );
-        });
-}
-
-
-function makePayment() {
-
-    const amount =
-        Number(currentPaymentAmount)
-        .toFixed(2);
-
-    const url =
-        "upi://pay?" +
-        "pa=" +
-        encodeURIComponent(UPI_ID) +
-        "&pn=" +
-        encodeURIComponent(
-            "One Million Pixels"
-        ) +
-        "&am=" +
-        amount +
-        "&cu=INR" +
-        "&tn=" +
-        encodeURIComponent(
-            "Pixel Business Booking"
-        );
-
-    window.location.href = url;
-}
-
-
-function paidMessage() {
-
-    alert(
-        "Thank you! Your payment confirmation has been submitted. Our team will verify the payment and approve your business listing."
-    );
-
-    closeModal("paymentModal");
-}
-
-
-/* =========================================================
-   INITIAL LOAD
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        document.getElementById("totalPixels")
-            .textContent =
-            TOTAL_PIXELS.toLocaleString("en-IN");
-
-        document.getElementById("availablePixels")
-            .textContent =
-            TOTAL_PIXELS.toLocaleString("en-IN");
-
-        showPreviewWall();
-
-        loadBusinesses();
-    }
-);
 </script>
 
 </body>
